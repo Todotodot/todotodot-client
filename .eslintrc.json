@@ -8,11 +8,18 @@
     "ecmaFeatures": {
       "jsx": true
     },
-    "ecmaVersion": 12,
+    "ecmaVersion": 2020,
     "sourceType": "module"
   },
   "plugins": ["prettier"],
   "rules": {
-    "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }]
+    "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
+    "quotes": [2, "double", { "avoidEscape": true }],
+    "arrow-body-style": ["off", "always"],
+    "no-restricted-globals": ["off", "event", "fdescribe"],
+    "comma-dangle": ["off", "never"],
+    "import/prefer-default-export": ["off", "always"],
+    "no-unused-vars": ["off", "always"],
+    "react/button-has-type": ["off", "always"]
   }
 }
