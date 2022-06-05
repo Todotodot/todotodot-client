@@ -24,6 +24,7 @@ API.interceptors.request.use((req) => {
       JSON.parse(localStorage.getItem("profile")).jwtToken
     }`;
   }
+
   return req;
 });
 
@@ -36,7 +37,10 @@ API.interceptors.response.use(
     return res;
   },
   (err) => {
-    if (err.response.status === 401) location.href = "/";
+    if (err.response.status === 401) {
+      location.href = "/";
+    }
+
     return Promise.reject(err);
   }
 );
