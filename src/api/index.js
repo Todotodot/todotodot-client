@@ -1,22 +1,20 @@
 import Axios from "axios";
+import catchAsync from "../utils/catchAsync";
 
 const API = Axios.create({ baseURL: "http://localhost:5000" });
 
-export const login = async (firebaseToken) => {
-  try {
-    await API.post(
-      "/login",
-      {},
-      {
-        headers: {
-          Authorization: `Bearer ${firebaseToken}`,
-        },
-      }
-    );
-  } catch (err) {
-    console.log(err);
-  }
-};
+export const login = catchAsync(async (firebaseToken) => {
+  console.log(firebaseToken);
+  await API.post(
+    "/login",
+    {},
+    {
+      headers: {
+        Authorization: `Bearer ${firebaseToken}`,
+      },
+    }
+  );
+});
 
 API.interceptors.request.use((req) => {
   if (localStorage.getItem("profile")) {
