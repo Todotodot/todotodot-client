@@ -4,7 +4,6 @@ import catchAsync from "../utils/catchAsync";
 const API = Axios.create({ baseURL: "http://localhost:5000" });
 
 export const login = catchAsync(async (firebaseToken) => {
-  console.log(firebaseToken);
   await API.post(
     "/login",
     {},
