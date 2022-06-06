@@ -1,4 +1,5 @@
 import Axios from "axios";
+
 import catchAsync from "../utils/catchAsync";
 
 const API = Axios.create({ baseURL: "http://localhost:5000" });
@@ -7,11 +8,7 @@ export const login = catchAsync(async (firebaseToken) => {
   await API.post(
     "/login",
     {},
-    {
-      headers: {
-        Authorization: `Bearer ${firebaseToken}`,
-      },
-    }
+    { headers: { Authorization: `Bearer ${firebaseToken}` } }
   );
 });
 
