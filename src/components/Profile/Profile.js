@@ -1,17 +1,32 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import Axios from "axios";
 import styled from "styled-components";
 import Sprite from "react-responsive-spritesheet";
 
-import orangeSlime from "../../assets/images/characters/orangeSlime_attack.png";
 import Button from "../shared/Button";
 import searchIcon from "../../assets/images/search-icon.png";
+import orangeSlime from "../../assets/images/characters/orangeSlime_attack.png";
 
 const Profile = () => {
+  const [user, setUser] = useState();
+
+  const axios = async () => {
+    const result = await Axios.get("http://localhost:5000", {
+      headers: { Authorization: `Bearer ${localStorage.getItem("profile")}` },
+    });
+
+    setUser(result.data.user);
+  };
+
+  useEffect(() => {
+    axios();
+  }, []);
+
   return (
     <ProfileStyle>
-      <StatusBarContainer>
+      <StatusBarContainer experience={user?.experience}>
         <StatusBar />
-        this percent
+        {user?.experience}
       </StatusBarContainer>
       <UserContainer>
         <OrangeSlime
@@ -24,9 +39,12 @@ const Profile = () => {
           loop={true}
         />
         <UserLevelContainer>
-          <UserLevel>Lv. 18</UserLevel>
+          <UserLevel>
+            <div>Lv. </div>
+            <div>{user?.level}</div>
+          </UserLevel>
         </UserLevelContainer>
-        <Username>username</Username>
+        <Username>{user?.name}</Username>
       </UserContainer>
       <SearchBarContainer>
         <img className="icon" src={searchIcon} alt="icon" />
@@ -73,9 +91,11 @@ const StatusBarContainer = styled.div`
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 
   ${StatusBar} {
+    border-radius: 3px solid tomato;
     position: absolute;
-    border-radius: 20px;
+    width: ${(props) => `${props.experience}%`};
     height: 100%;
+    border-radius: 20px;
     background-color: green;
   }
 `;
@@ -113,6 +133,13 @@ const UserContainer = styled.div`
     top: 180px;
     border: 2px solid #49251c;
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    div {
+      margin: 0px 3px 0px 3px;
+    }
   }
 
   ${Username} {
