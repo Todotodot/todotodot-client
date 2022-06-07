@@ -13,8 +13,8 @@ const Error = () => {
     <ErrorTemplate>
       <div className="container">
         <LeftContainer>
-          <img src={turtle} alt="turtle" className="bigTurtle" />
-          <img src={turtle} alt="turtle" className="smallTurtle" />
+          <img src={turtle} alt="bigTurtle" className="bigTurtle" />
+          <img src={turtle} alt="smallTurtle" className="smallTurtle" />
         </LeftContainer>
         <CenterContainer>
           <div className="errorMessageBubble">
@@ -24,7 +24,7 @@ const Error = () => {
               className="bigSpeechBubble"
             />
             <ErrorMessage>
-              <h1>404</h1>
+              <h1>error status</h1>
               <pre>
                 <p>We looked every where for this page.</p>
                 <p>Are you sure the website URL is correct?</p>
@@ -39,7 +39,7 @@ const Error = () => {
           </div>
         </CenterContainer>
         <RightContainer>
-          <div className="goBackBtn">
+          <div className="HomeBtn">
             <img
               src={smallSpeechBubble}
               alt="smallSpeechBubble"
@@ -145,7 +145,7 @@ const ErrorMessage = styled.div`
 const RightContainer = styled.div`
   position: relative;
 
-  .goBackBtn {
+  .HomeBtn {
     position: relative;
     text-align: center;
     cursor: pointer;
@@ -158,6 +158,7 @@ const RightContainer = styled.div`
       font-size: 40px;
       color: white;
     }
+
     .smallSpeechBubble {
       position: absolute;
       bottom: 330px;
