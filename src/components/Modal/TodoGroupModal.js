@@ -71,10 +71,11 @@ const Content = styled.div`
 
 const CloseButton = styled.button`
   position: absolute;
-  top: 15px;
+  top: 12px;
   right: 15px;
   background-color: Transparent;
   border: none;
+  font-size: 40px;
 `;
 
 const CategoryWrapper = styled.div`

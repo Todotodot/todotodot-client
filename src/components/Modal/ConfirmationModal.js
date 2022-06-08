@@ -1,17 +1,18 @@
 import React from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
+
 import Portal from "../Portal/Portal";
 import Button from "../shared/Button";
 
 const ConfirmationModal = ({ setModalOn }) => {
-  function handleSubmit(clicked) {
+  const handleSubmit = (clicked) => {
     if (clicked === "NO") {
       setModalOn(false);
     }
 
     // api 요청 로직
-  }
+  };
 
   return (
     <Portal>
@@ -61,10 +62,11 @@ const Content = styled.div`
 
 const CloseButton = styled.button`
   position: absolute;
-  top: 7px;
+  top: 5px;
   right: 7px;
   background-color: Transparent;
   border: none;
+  font-size: 40px;
 `;
 
 const MessageParagraph = styled.p`
