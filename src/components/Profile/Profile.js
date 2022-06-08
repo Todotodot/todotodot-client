@@ -4,6 +4,7 @@ import styled from "styled-components";
 import Sprite from "react-responsive-spritesheet";
 
 import Button from "../shared/Button";
+
 import searchIcon from "../../assets/images/search-icon.png";
 import orangeSlime from "../../assets/images/characters/orangeSlime_attack.png";
 
@@ -40,8 +41,8 @@ const Profile = () => {
         />
         <UserLevelContainer>
           <UserLevel>
-            <div>Lv. </div>
-            <div>{user?.level}</div>
+            Lv.
+            {user?.level}
           </UserLevel>
         </UserLevelContainer>
         <Username>{user?.name}</Username>
@@ -57,8 +58,6 @@ const Profile = () => {
     </ProfileStyle>
   );
 };
-
-export default Profile;
 
 const StatusBar = styled.div``;
 const OrangeSlime = styled(Sprite)``;
@@ -191,3 +190,5 @@ const ButtonContainer = styled.div`
     height: 45px;
   }
 `;
+
+export default Profile;
