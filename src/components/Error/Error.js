@@ -30,7 +30,7 @@ const Error = () => {
                 <p>Are you sure the website URL is correct?</p>
                 <p>Get in touch with the site owner.</p>
               </pre>
-              <p className="onomatopoeia">oops!</p>
+              <p className="word">oops!</p>
             </ErrorMessage>
           </div>
           <div className="imgGroup">
@@ -131,7 +131,7 @@ const ErrorMessage = styled.div`
     }
   }
 
-  .onomatopoeia {
+  .word {
     position: absolute;
     top: 100px;
     right: 400px;
