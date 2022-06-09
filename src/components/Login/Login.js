@@ -22,7 +22,11 @@ const Login = () => {
     const token = await data.user.getIdToken();
 
     if (data && token) {
-      await login(token);
+      const res = await login(token);
+
+      if (res.data.token) {
+        localStorage.setItem("profile", res.data.token);
+      }
     }
   });
 

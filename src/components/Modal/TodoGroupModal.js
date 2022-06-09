@@ -1,17 +1,45 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
+
 import Portal from "../Portal/Portal";
 import Button from "../shared/Button";
+import catchAsync from "../../utils/catchAsync";
+import * as api from "../../api";
 
 const TodoGroupModal = ({ setModalOn }) => {
-  const newData = {};
+  const propsCategory = "";
+  const groupId = "";
+  const todoId = "";
 
-  const handleSubmit = () => {
-    // api 요청 로직
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
+
+  const handleSubmit = catchAsync(async () => {
+    switch (propsCategory) {
+      case "Create TODO":
+        await api.createTodo({ title, content });
+        break;
+      case "Create Group TODO":
+        await api.createGroupTodo(groupId, { title, content });
+        break;
+      case "Update TODO":
+        await api.updateTodo(todoId, { title, content });
+        break;
+      case "Update Group TODO":
+        await api.updateGroupTodo(groupId, todoId, { title, content });
+        break;
+      case "Create Group":
+        await api.createGroup({ title });
+        break;
+      case "Update Group":
+        await api.updateGroup(groupId, { title });
+        break;
+      default:
+    }
 
     setModalOn(false);
-  };
+  });
 
   return (
     <Portal>
@@ -19,22 +47,24 @@ const TodoGroupModal = ({ setModalOn }) => {
         <Content>
           <form>
             <CategoryWrapper>
-              <CategoryParagraph>props category</CategoryParagraph>
+              <CategoryParagraph>{propsCategory}</CategoryParagraph>
             </CategoryWrapper>
             <TitleInput
               type="text"
               placeholder="제목을 입력하세요."
-              value={newData.title}
-              // onChange={(ev) => (newData.title = ev.target.value)}
+              value={title}
+              onChange={(ev) => setTitle(ev.target.value)}
             />
-            <ContentTextarea
-              type="text"
-              placeholder="내용을 입력하세요."
-              value={newData.content}
-              // onChange={(ev) => (newData.content = ev.target.value)}
-            />
-            <ResponseButton onClick={() => handleSubmit()}>
-              Create/Update
+            {groupId && (
+              <ContentTextarea
+                type="text"
+                placeholder="내용을 입력하세요."
+                value={content}
+                onChange={(ev) => setContent(ev.target.value)}
+              />
+            )}
+            <ResponseButton onClick={handleSubmit}>
+              {propsCategory.includes("Create") ? "Create" : "Update"}
             </ResponseButton>
           </form>
           <CloseButton onClick={() => setModalOn(false)}>&#215;</CloseButton>
@@ -63,6 +93,7 @@ const Content = styled.div`
   align-items: center;
   flex-direction: column;
   position: relative;
+  overflow: scroll;
   background-color: white;
   border: 4px solid #49251c;
   border-radius: 25px;
@@ -107,6 +138,7 @@ const ContentTextarea = styled.textarea`
   border-radius: 10px;
   margin-top: 10px;
   font-size: 25px;
+  resize: none;
 `;
 
 const ResponseButton = styled(Button)`

@@ -4,15 +4,30 @@ import PropTypes from "prop-types";
 
 import Portal from "../Portal/Portal";
 import Button from "../shared/Button";
+import catchAsync from "../../utils/catchAsync";
+import * as api from "../../api";
 
 const ConfirmationModal = ({ setModalOn }) => {
-  const handleSubmit = (clicked) => {
-    if (clicked === "NO") {
-      setModalOn(false);
+  const propsCategory = "";
+  const groupId = "";
+  const todoId = "";
+
+  const handleSubmit = catchAsync(async () => {
+    switch (propsCategory) {
+      case "Delete TODO":
+        await api.deleteTodo(todoId);
+        break;
+      case "Delete Group TODO":
+        await api.deleteGroupTodo(groupId, todoId);
+        break;
+      case "Delete Group":
+        await api.deleteGroup(groupId);
+        break;
+      default:
     }
 
-    // api 요청 로직
-  };
+    setModalOn(false);
+  });
 
   return (
     <Portal>
@@ -20,10 +35,8 @@ const ConfirmationModal = ({ setModalOn }) => {
         <Content>
           <MessageParagraph>props message</MessageParagraph>
           <div>
-            <ResponseButton onClick={() => handleSubmit("YES")}>
-              YES
-            </ResponseButton>
-            <ResponseButton onClick={() => handleSubmit("NO")}>
+            <ResponseButton onClick={handleSubmit}>YES</ResponseButton>
+            <ResponseButton onClick={() => setModalOn(false)}>
               NO
             </ResponseButton>
           </div>
