@@ -1,176 +1,260 @@
-import React, { useEffect, useState } from "react";
-import Axios from "axios";
-import styled from "styled-components";
+import React, { useCallback, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import styled, { keyframes } from "styled-components";
 import Sprite from "react-responsive-spritesheet";
+import PropTypes from "prop-types";
+import { debounce } from "lodash";
 
 import Button from "../shared/Button";
+import { setModalInfo } from "../../features/todoSlice";
 
-import searchIcon from "../../assets/images/search-icon.png";
-import orangeSlime from "../../assets/images/characters/orangeSlime_attack.png";
+import searchIcon from "../../assets/images/icons/search-icon.png";
+import settingIcon from "../../assets/images/icons/setting.png";
+import soundOn from "../../assets/images/icons/sound-on.png";
+import soundOff from "../../assets/images/icons/sound-off.png";
+import blueSlimeIdle from "../../assets/images/characters/blueslime-idle.png";
 
-const Profile = () => {
-  const [user, setUser] = useState();
+const Profile = ({ onSearchValue }) => {
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.user);
+  const [showSetting, setShowSetting] = useState(false);
 
-  const axios = async () => {
-    const result = await Axios.get("http://localhost:5000", {
-      headers: { Authorization: `Bearer ${localStorage.getItem("profile")}` },
-    });
-
-    setUser(result.data.user);
+  const handleClick = (mode) => {
+    dispatch(
+      setModalInfo({
+        propsCategory: mode,
+      })
+    );
   };
 
-  useEffect(() => {
-    axios();
-  }, []);
+  const handleShowSetting = () => {
+    setShowSetting((open) => !open);
+  };
+
+  const handleSearchTodo = (event) => {
+    const { value } = event.target;
+
+    onSearchValue(value);
+  };
+
+  const debounceSearch = useCallback(debounce(handleSearchTodo, 200), []);
 
   return (
     <ProfileStyle>
       <StatusBarContainer experience={user?.experience}>
-        <StatusBar />
-        {user?.experience}
+        <div className="statusBar" />
+        <span className="statusText">
+          {`${user?.experience}/${user?.level}`}
+        </span>
       </StatusBarContainer>
       <UserContainer>
-        <OrangeSlime
-          image={orangeSlime}
-          widthFrame={270}
-          heightFrame={212}
-          steps={3}
-          fps={8}
-          autoplay={true}
-          loop={true}
-        />
-        <UserLevelContainer>
+        <div className="profile">
+          <SlimeIdle
+            image={blueSlimeIdle}
+            widthFrame={240}
+            heightFrame={210}
+            steps={5}
+            fps={5}
+            autoplay={true}
+            loop={true}
+          />
+        </div>
+        <div className="userLevelContainer">
           <UserLevel>
             Lv.
             {user?.level}
           </UserLevel>
-        </UserLevelContainer>
-        <Username>{user?.name}</Username>
+        </div>
+        <div className="userName">{user?.name}</div>
       </UserContainer>
       <SearchBarContainer>
         <img className="icon" src={searchIcon} alt="icon" />
-        <SearchBar type="text" />
+        <input type="text" className="searchBar" onChange={debounceSearch} />
       </SearchBarContainer>
       <ButtonContainer>
-        <Button>Personal Todo</Button>
-        <Button>Group List</Button>
+        <Button onClick={() => handleClick("TODO")}>Personal Todo</Button>
+        <Button onClick={() => handleClick("Group")}>Group List</Button>
       </ButtonContainer>
+      <button className="settingBtn" onClick={() => handleShowSetting()}>
+        <img src={settingIcon} alt="settingBtn" />
+      </button>
+      <SettingContainer isShow={showSetting ? "block" : "none"}>
+        <Button>
+          <img src={soundOn} alt="BGMBtn" className="soundIcon" />
+          <span>배경음</span>
+        </Button>
+        <Button>
+          <img src={soundOn} alt="SFXBtn" className="soundIcon" />
+          <span>효과음</span>
+        </Button>
+      </SettingContainer>
     </ProfileStyle>
   );
 };
 
-const StatusBar = styled.div``;
-const OrangeSlime = styled(Sprite)``;
-const UserLevelContainer = styled.div``;
-const UserLevel = styled.div``;
-const Username = styled.div``;
-const SearchBar = styled.input``;
+const ProfileAnimation = keyframes`
+  0% {
+    opacity: 0;
+    transform: translate3d(-100%, 0, 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateZ(0);
+  }
+`;
+
+const SettingBtnAnimation = keyframes`
+  100% {
+    transform: rotate(360deg);
+  }
+`;
 
 const ProfileStyle = styled.div`
-  box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
+  align-items: center;
   width: 400px;
   height: 100vh;
-  background-color: #7877c1;
+  box-sizing: border-box;
+  background-color: rgba(169, 170, 188, 0.5);
+  animation: ${ProfileAnimation} 0.6s linear;
+
+  .settingBtn {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    outline: none;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+
+    &:hover {
+      animation: ${SettingBtnAnimation} 0.6s linear;
+    }
+
+    img {
+      width: 40px;
+      filter: opacity(90%);
+    }
+  }
 `;
 
 const StatusBarContainer = styled.div`
   box-sizing: border-box;
-  width: 60%;
-  height: 20px;
-  border-radius: 20px;
-  margin-bottom: 7%;
   position: relative;
+  width: 80%;
+  height: 16px;
+  margin-bottom: 20%;
+  border-radius: 50px;
   background-color: white;
   text-align: center;
-  line-height: 20px;
-  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  box-shadow: 0px 3px 8px rgba(148, 148, 148, 0.2);
 
-  ${StatusBar} {
-    border-radius: 3px solid tomato;
+  .statusBar {
     position: absolute;
-    width: ${(props) => `${props.experience}%`};
+    top: 0;
+    left: -1px;
+    width: ${(props) => `${props.experience * 3}0%`};
     height: 100%;
-    border-radius: 20px;
-    background-color: green;
+    border-radius: 15px;
+    background-color: #40d65e;
+  }
+
+  .statusText {
+    position: absolute;
+    top: -2px;
+    right: 45%;
+    font-size: 19px;
+    font-weight: bold;
   }
 `;
 
 const UserContainer = styled.div`
-  position: relative;
-  width: 60%;
-  height: 240px;
-  margin-bottom: 5%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-around;
+  position: relative;
+  width: 60%;
+  height: 240px;
+  margin-bottom: 5%;
 
-  ${OrangeSlime} {
-    width: 100%;
-  }
-
-  ${UserLevelContainer} {
-    height: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  ${UserLevel} {
-    position: absolute;
-    width: 100px;
-    height: 25px;
-    line-height: 25px;
-    background-color: #ec7665;
-    text-align: center;
-    border-radius: 20px;
-    color: black;
-    top: 180px;
-    border: 2px solid #49251c;
-    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  .profile {
     display: flex;
     justify-content: center;
     align-items: center;
-
-    div {
-      margin: 0px 3px 0px 3px;
-    }
+    padding: 55px 0;
+    border: 3px solid #49251c;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.2);
   }
 
-  ${Username} {
+  .userLevelContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 24px;
+  }
+
+  .userName {
     width: 100%;
     height: 24px;
+    margin: 30px 0 10px 0;
     text-align: center;
     font-size: 25px;
   }
 `;
 
+const SlimeIdle = styled(Sprite)`
+  width: 60%;
+`;
+
+const UserLevel = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  width: 100px;
+  height: 25px;
+  border: 2px solid #49251c;
+  border-radius: 20px;
+  background-color: #ec7665;
+  text-align: center;
+  line-height: 25px;
+  font-size: 24px;
+  color: #2e2e2e;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+
+  div {
+    margin: 0px 3px;
+  }
+`;
+
 const SearchBarContainer = styled.div`
-  width: 100%;
-  height: 13%;
-  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  position: relative;
+  width: 100%;
+  height: 13%;
 
   .icon {
-    width: 18px;
     position: absolute;
     left: 32px;
+    width: 18px;
   }
 
-  ${SearchBar} {
+  .searchBar {
     width: 75%;
     height: 20px;
-    border-radius: 7px;
     padding-left: 40px;
-    background-color: rgba(255, 255, 255, 0.3);
+    outline: none;
     border: 3px solid #49251c;
+    border-radius: 7px;
+    background-color: rgba(255, 255, 255, 0.3);
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
   }
 `;
@@ -184,11 +268,46 @@ const ButtonContainer = styled.div`
   height: 130px;
 
   Button {
-    margin-top: 0px;
-    margin: 6px;
     width: 280px;
     height: 45px;
+    margin-top: 0px;
+    margin: 6px;
   }
 `;
+
+const SettingContainer = styled.div`
+  display: ${(props) => `${props.isShow}`};
+  position: absolute;
+  bottom: 18px;
+  left: 70px;
+  width: 110px;
+  height: 70px;
+
+  button {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 30px;
+    margin: 5px 0;
+    border: none;
+    border-radius: 15px;
+    background-color: rgba(236, 118, 101, 0.8);
+
+    img {
+      width: 24px;
+      margin: 2px 8px 0 5px;
+      filter: brightness(0) invert(1);
+    }
+
+    span {
+      font-size: 17px;
+      color: white;
+    }
+  }
+`;
+
+Profile.propTypes = {
+  onSearchValue: PropTypes.func.isRequired,
+};
 
 export default Profile;

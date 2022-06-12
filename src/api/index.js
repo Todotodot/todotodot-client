@@ -4,9 +4,7 @@ const API = Axios.create({ baseURL: "http://localhost:5000" });
 
 API.interceptors.request.use((req) => {
   if (localStorage.getItem("profile")) {
-    req.headers.Authorization = `Bearer ${JSON.parse(
-      localStorage.getItem("profile")
-    )}`;
+    req.headers.Authorization = `Bearer ${localStorage.getItem("profile")}`;
   }
 
   return req;
@@ -33,38 +31,46 @@ export const login = (firebaseToken) => {
   );
 };
 
-export const createTodo = (newTodo) => {
-  return API.post("/todos", { ...newTodo });
+export const getUserInfo = () => {
+  return API.get("/");
 };
 
-export const createGroupTodo = (groupId, newTodo) => {
-  return API.post(`/${groupId}/todos`, { ...newTodo });
+export const getGroupInfo = (groupId) => {
+  return API.get(`/groups/${groupId}`);
+};
+
+export const createTodo = (newTodo) => {
+  return API.post("/users/todos", { ...newTodo });
 };
 
 export const updateTodo = (todoId, modifiedTodo) => {
-  return API.patch(`/todos/${todoId}`, { ...modifiedTodo });
+  return API.patch(`/users/todos/${todoId}`, { ...modifiedTodo });
+};
+
+export const createGroupTodo = (groupId, newTodo) => {
+  return API.post(`/groups/${groupId}/todos`, { ...newTodo });
 };
 
 export const updateGroupTodo = (groupId, todoId, modifiedTodo) => {
-  return API.patch(`/${groupId}/todos/${todoId}`, { ...modifiedTodo });
+  return API.patch(`/groups/${groupId}/todos/${todoId}`, { ...modifiedTodo });
 };
 
 export const createGroup = (newGroup) => {
-  return API.post("/", { ...newGroup });
+  return API.post("/groups", { ...newGroup });
 };
 
 export const updateGroup = (groupId, modifiedGroup) => {
-  return API.patch(`/${groupId}`, { ...modifiedGroup });
+  return API.patch(`/groups/${groupId}`, { ...modifiedGroup });
 };
 
 export const deleteTodo = (todoId) => {
-  return API.delete(`/todos/${todoId}`);
+  return API.delete(`/users/todos/${todoId}`);
 };
 
 export const deleteGroupTodo = (groupId, todoId) => {
-  return API.delete(`/${groupId}/todos/${todoId}`);
+  return API.delete(`/groups/${groupId}/todos/${todoId}`);
 };
 
 export const deleteGroup = (groupId) => {
-  return API.delete(`/${groupId}`);
+  return API.delete(`/groups/${groupId}`);
 };

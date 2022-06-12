@@ -1,141 +1,307 @@
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable operator-linebreak */
-import React, { useEffect, useState } from "react";
-import styled from "styled-components";
-import Axios from "axios";
+import React, { useCallback, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import styled, { keyframes } from "styled-components";
+import PropTypes from "prop-types";
+import { debounce } from "lodash";
 
-import backButton from "../../assets/images/back-button.png";
+import Button from "../shared/Button";
+import Line from "../shared/Line";
+import catchAsync from "../../utils/catchAsync";
 
-const UserList = () => {
-  const [members, setMembers] = useState([]); // 한명이라도 있어야 group이 형성될 수 있으니 length로 확인 가능합니다
-  const [todos, setTodos] = useState([]); // todo는 아직 없을수도 있으니 length로 유효성을 확인하면 안됩니다
-  const [group, setGroup] = useState({});
+import backButton from "../../assets/images/icons/back-button.png";
+import searchIcon from "../../assets/images/icons/search-icon.png";
+import settingIcon from "../../assets/images/icons/setting.png";
+import soundOn from "../../assets/images/icons/sound-on.png";
+import soundOff from "../../assets/images/icons/sound-off.png";
+import shareIcon from "../../assets/images/icons/share.png";
 
-  const axios = async () => {
-    const result = await Axios.get(
-      "http://localhost:5000/groups/629f52886e2d583d981b65f0",
-      {
-        headers: { Authorization: `Bearer ${localStorage.getItem("profile")}` },
-      }
-    );
+const UserList = ({ onSearchValue }) => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const user = useSelector((state) => state.user);
+  const [showSetting, setShowSetting] = useState(false);
 
-    setGroup(result.data.data.group);
-    setTodos(result.data.data.group.todos);
-    setMembers(result.data.data.group.members);
+  const backToMain = () => {
+    navigate("/");
   };
 
-  useEffect(() => {
-    axios();
-  }, []);
+  const handleCopyClipBoard = catchAsync(async () => {
+    await navigator.clipboard.writeText(
+      `http://localhost:3000${location.pathname}`
+    );
+
+    alert(`Copy Success!!\n[ http://localhost:3000${location.pathname} ]`);
+  });
+
+  const handleShowSetting = () => {
+    setShowSetting((open) => !open);
+  };
+
+  const handleSearchTodo = (event) => {
+    const { value } = event.target;
+
+    onSearchValue(value);
+  };
+
+  const debounceSearch = useCallback(debounce(handleSearchTodo, 200), []);
 
   return (
     <UserListStyle>
       <ListNavBar>
-        <img className="backButton" src={backButton} alt="back" />
-        <div className="emoji">🐮</div>
-        <div className="infoText">User List</div>
+        <button className="backButton" onClick={() => backToMain()}>
+          <img src={backButton} alt="backButton" />
+        </button>
+        <p className="emoji">🐮</p>
+        <p className="infoText">{user.title}</p>
       </ListNavBar>
       <ListContainer>
         <div className="userText">
-          <div className="text">User</div>
+          <div>
+            <span className="text">Member</span>
+            <button className="shareBtn" onClick={() => handleCopyClipBoard()}>
+              <img src={shareIcon} alt="shareBtn" />
+            </button>
+          </div>
+          <Line />
         </div>
         <div className="listWrapper">
-          <ul>
-            {members.length &&
-              members.map((member) => (
-                <div className="member">
-                  <div className="emoji">🔥</div>
-                  <li key={member._id} className="memberName">
-                    {member.name}
-                  </li>
-                </div>
+          <ul className="userList">
+            {user.members &&
+              user.members.map((member) => (
+                <li key={member._id} className="member">
+                  <p className="emoji">🔥</p>
+                  <p className="memberName">{member.name}</p>
+                </li>
               ))}
           </ul>
         </div>
       </ListContainer>
+      <SearchBarContainer>
+        <img className="icon" src={searchIcon} alt="icon" />
+        <input type="text" className="searchBar" onChange={debounceSearch} />
+      </SearchBarContainer>
+      <button className="settingBtn" onClick={() => handleShowSetting()}>
+        <img src={settingIcon} alt="settingBtn" />
+      </button>
+      <SettingContainer isShow={showSetting ? "block" : "none"}>
+        <Button>
+          <img src={soundOn} alt="BGMBtn" className="soundIcon" />
+          <span>배경음</span>
+        </Button>
+        <Button>
+          <img src={soundOn} alt="SFXBtn" className="soundIcon" />
+          <span>효과음</span>
+        </Button>
+      </SettingContainer>
     </UserListStyle>
   );
 };
 
+const UserListAnimation = keyframes`
+  0% {
+    opacity: 0;
+    transform: translate3d(-100%, 0, 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateZ(0);
+  }
+`;
+
+const SettingBtnAnimation = keyframes`
+  100% {
+    transform: rotate(360deg);
+  }
+`;
+
 const UserListStyle = styled.div`
-  border: 1px solid black;
+  position: relative;
   width: 400px;
   height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  background-color: rgba(169, 170, 188, 0.5);
+  animation: ${UserListAnimation} 0.6s linear;
+
+  .settingBtn {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    outline: none;
+    border: none;
+    background-color: transparent;
+
+    &:hover {
+      animation: ${SettingBtnAnimation} 0.6s linear;
+    }
+
+    img {
+      width: 40px;
+      filter: opacity(90%);
+    }
+  }
 `;
 
 const ListNavBar = styled.div`
-  width: 90%;
-  height: 10%;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  width: 90%;
+  margin: 10px;
 
   .backButton {
-    width: 10%;
+    width: 50px;
+    height: 50px;
+    outline: none;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+
+    img {
+      width: 70%;
+      margin: 0 10px;
+    }
   }
 
   .emoji {
-    width: 20%;
-    font-size: 50px;
     margin-left: 20px;
+    font-size: 30px;
   }
 
   .infoText {
-    width: 70%;
-    font-size: 26px;
     float: right;
-    margin-right: 5px;
+    width: 70%;
+    margin: 0 10px;
+    font-size: 26px;
     text-align: right;
+    text-overflow: ellipsis;
+    overflow: hidden;
   }
 `;
 
 const ListContainer = styled.div`
+  width: 90%;
+  height: 68%;
+  margin-left: 14px;
   border: 2px solid #49251c;
   border-radius: 8px;
-  width: 90%;
-  height: 85%;
-  display: flex;
-  flex-direction: column;
 
   .userText {
-    border-bottom: 2px solid #49251c;
-    margin-left: 7%;
-    width: 70%;
+    width: 29%;
     height: 50px;
-    display: flex;
-    align-items: center;
+    margin: 5px 0 0 7%;
 
-    .text {
-      font-size: 35px;
-      color: #ec7665;
+    div {
+      display: flex;
+
+      .text {
+        padding: 0 130% 0 2px;
+        font-size: 35px;
+        color: rgba(255, 255, 255, 0.9);
+      }
+
+      .shareBtn {
+        margin: 0;
+        padding: 3px 0;
+        outline: none;
+        border: none;
+        border-radius: 50%;
+        background-color: transparent;
+        cursor: pointer;
+
+        img {
+          width: 22px;
+          margin: 2px 8px 0 5px;
+          filter: opacity(0.7);
+        }
+      }
     }
   }
 
   .listWrapper {
-    width: 300px;
+    width: 250px;
     margin-left: 5%;
 
     .member {
-      width: 100%;
-      height: 60px;
       display: flex;
       align-items: center;
-      margin-top: 5px;
+      height: 50px;
 
       .emoji {
-        width: 20%;
-        font-size: 50px;
+        font-size: 30px;
       }
 
       .memberName {
-        margin-left: 7px;
+        font-size: 25px;
+        margin-left: 10px;
       }
     }
   }
 `;
+
+const SearchBarContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  width: 100%;
+  height: 13%;
+
+  .icon {
+    position: absolute;
+    left: 32px;
+    width: 18px;
+  }
+
+  .searchBar {
+    width: 75%;
+    height: 20px;
+    padding-left: 40px;
+    outline: none;
+    border: 3px solid #49251c;
+    border-radius: 7px;
+    background-color: rgba(255, 255, 255, 0.3);
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  }
+`;
+
+const SettingContainer = styled.div`
+  display: ${(props) => `${props.isShow}`};
+  position: absolute;
+  bottom: 20px;
+  left: 70px;
+  width: 110px;
+  height: 70px;
+
+  button {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 30px;
+    margin: 5px 0;
+    border: none;
+    border-radius: 15px;
+    background-color: rgba(236, 118, 101, 0.8);
+    box-sizing: 5px 5px 2px black;
+
+    img {
+      width: 24px;
+      margin: 2px 8px 0 5px;
+      filter: brightness(0) invert(1);
+    }
+
+    span {
+      font-size: 19px;
+      color: white;
+    }
+  }
+`;
+
+UserList.propTypes = {
+  onSearchValue: PropTypes.func.isRequired,
+};
 
 export default UserList;

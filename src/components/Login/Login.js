@@ -1,14 +1,17 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import styled, { keyframes } from "styled-components";
 import Sprite from "react-responsive-spritesheet";
 
+import Button from "../shared/Button";
 import {
   firebaseAuth,
   googleProvider,
   googlePopup,
 } from "../../config/firebase";
 import { login } from "../../api/index";
-import Button from "../shared/Button";
+import { fetchUserInfo } from "../../features/todoSlice";
 import catchAsync from "../../utils/catchAsync";
 
 import orangeSlime from "../../assets/images/characters/orangeSlime_attack.png";
@@ -17,7 +20,10 @@ import exampleTodo from "../../assets/images/todo.png";
 import logo from "../../assets/images/logo.png";
 
 const Login = () => {
-  const onLogin = catchAsync(async () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const handleLogin = catchAsync(async () => {
     const data = await googlePopup(firebaseAuth, googleProvider);
     const token = await data.user.getIdToken();
 
@@ -26,6 +32,8 @@ const Login = () => {
 
       if (res.data.token) {
         localStorage.setItem("profile", res.data.token);
+        dispatch(fetchUserInfo());
+        navigate("/");
       }
     }
   });
@@ -36,30 +44,34 @@ const Login = () => {
         <div className="slideAnimation">
           <p>Clicker와 TodoList가 만났다!!</p>
           <img src={exampleTodo} alt="exampleTodo" />
-          <Boss
-            image={boss}
-            widthFrame={1050}
-            heightFrame={975}
-            steps={8}
-            fps={8}
-            autoplay={true}
-            loop={true}
-          />
-          <OrangeSlime
-            image={orangeSlime}
-            widthFrame={270}
-            heightFrame={212}
-            steps={3}
-            fps={8}
-            autoplay={true}
-            loop={true}
-          />
+          <div className="sprites">
+            <Boss
+              image={boss}
+              widthFrame={1050}
+              heightFrame={975}
+              steps={8}
+              fps={8}
+              autoplay={true}
+              loop={true}
+            />
+            <OrangeSlime
+              image={orangeSlime}
+              widthFrame={270}
+              heightFrame={212}
+              steps={3}
+              fps={8}
+              autoplay={true}
+              loop={true}
+            />
+          </div>
         </div>
       </div>
-      <div className="loginPart">
-        <img src={logo} alt="logo" />
-        <div className="loginBtn">
-          <Button onClick={onLogin}>Sign in with Google account</Button>
+      <div className="loginContainer">
+        <div className="loginBorder">
+          <img src={logo} alt="logo" />
+          <div className="loginBtn">
+            <Button onClick={handleLogin}>Sign in with Google account</Button>
+          </div>
         </div>
       </div>
     </LoginStyle>
@@ -93,15 +105,17 @@ const RightSectionAnimation = keyframes`
 const LoginStyle = styled.div`
   display: flex;
   text-align: center;
+  height: 100vh;
 
   .slidePart {
     width: 70%;
-    height: 100vh;
-    background-color: #7877c1;
+    transform: translateY(20%);
 
     .slideAnimation {
-      position: relative;
-      top: 20%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
       animation: ${LeftSectionAnimation} 1s linear;
 
       p {
@@ -112,33 +126,41 @@ const LoginStyle = styled.div`
       img {
         width: 700px;
       }
+
+      .sprites {
+        position: relative;
+        width: 700px;
+      }
     }
   }
 
-  .loginPart {
+  .loginContainer {
     position: relative;
     width: 30%;
-    height: 100vh;
-    padding-top: 10%;
-    background-color: #eca2a2;
+    height: auto;
+    background-color: rgba(169, 170, 188, 0.5);
     animation: ${RightSectionAnimation} 0.5s linear;
 
-    img {
-      width: 250px;
+    .loginBorder {
+      transform: translateY(90%);
+
+      img {
+        width: 250px;
+      }
     }
   }
 `;
 
 const OrangeSlime = styled(Sprite)`
   position: absolute;
-  top: 3px;
-  left: 400px;
+  top: -612px;
+  left: 0;
   width: 70px;
 `;
 
 const Boss = styled(Sprite)`
   position: absolute;
-  right: 300px;
+  right: -60px;
   bottom: 0;
   width: 300px;
 `;
