@@ -1,46 +1,68 @@
 import React from "react";
+import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
-import PropTypes from "prop-types";
 
 import Portal from "../Portal/Portal";
 import Button from "../shared/Button";
 import catchAsync from "../../utils/catchAsync";
+import {
+  fetchGroupInfo,
+  fetchUserInfo,
+  setModalInfo,
+} from "../../features/todoSlice";
 import * as api from "../../api";
 
-const ConfirmationModal = ({ setModalOn }) => {
-  const propsCategory = "";
-  const groupId = "";
-  const todoId = "";
+const ConfirmationModal = () => {
+  const dispatch = useDispatch();
+  const modalInfo = useSelector((state) => state.modalInfo);
 
-  const handleSubmit = catchAsync(async () => {
-    switch (propsCategory) {
-      case "Delete TODO":
-        await api.deleteTodo(todoId);
+  const closeModal = () => {
+    dispatch(
+      setModalInfo({
+        propsCategory: modalInfo.propsCategory.includes("Group")
+          ? "Group"
+          : "TODO",
+      })
+    );
+  };
+
+  const handleSubmit = catchAsync(async (event) => {
+    event.preventDefault();
+
+    switch (modalInfo.propsCategory) {
+      case "DeleteTODO":
+        await api.deleteTodo(modalInfo.todoId);
         break;
-      case "Delete Group TODO":
-        await api.deleteGroupTodo(groupId, todoId);
+      case "DeleteGroupTODO":
+        await api.deleteGroupTodo(modalInfo.groupId, modalInfo.todoId);
         break;
-      case "Delete Group":
-        await api.deleteGroup(groupId);
+      case "DeleteGroup":
+        await api.deleteGroup(modalInfo.groupId);
         break;
       default:
     }
 
-    setModalOn(false);
+    if (modalInfo.groupId && modalInfo.propsCategory.includes("TODO")) {
+      dispatch(fetchGroupInfo(modalInfo));
+    } else {
+      dispatch(fetchUserInfo());
+    }
+
+    closeModal();
   });
 
   return (
     <Portal>
       <Background>
         <Content>
-          <MessageParagraph>props message</MessageParagraph>
+          <MessageParagraph>{modalInfo.confirmMessage}</MessageParagraph>
           <div>
-            <ResponseButton onClick={handleSubmit}>YES</ResponseButton>
-            <ResponseButton onClick={() => setModalOn(false)}>
-              NO
-            </ResponseButton>
+            <ResponseButton onClick={() => handleSubmit()}>YES</ResponseButton>
+            <ResponseButton onClick={() => closeModal()}>NO</ResponseButton>
           </div>
-          <CloseButton onClick={() => setModalOn(false)}>&#215;</CloseButton>
+          <button className="closeBtn" onClick={() => closeModal()}>
+            &#215;
+          </button>
         </Content>
       </Background>
     </Portal>
@@ -49,49 +71,53 @@ const ConfirmationModal = ({ setModalOn }) => {
 
 const Background = styled.div`
   box-sizing: border-box;
-  width: 100%;
-  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
   position: fixed;
   left: 0px;
   top: 0px;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(74, 74, 74, 0.5);
 `;
 
 const Content = styled.div`
-  width: 450px;
-  height: 250px;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
   position: relative;
-  background-color: white;
+  width: 450px;
+  height: 250px;
   border: 4px solid #49251c;
   border-radius: 25px;
+  background-color: white;
   text-align: center;
-`;
 
-const CloseButton = styled.button`
-  position: absolute;
-  top: 5px;
-  right: 7px;
-  background-color: Transparent;
-  border: none;
-  font-size: 40px;
+  .closeBtn {
+    position: absolute;
+    top: 5px;
+    right: 7px;
+    border: none;
+    background-color: Transparent;
+    font-size: 40px;
+    font-family: "TTCrownMychewR";
+    cursor: pointer;
+  }
 `;
 
 const MessageParagraph = styled.p`
-  width: 370px;
-  height: 110px;
   display: flex;
   justify-content: center;
   align-items: center;
+  width: 370px;
+  height: 110px;
+  margin-top: 30px;
   border: 4px solid #4a5280;
   border-radius: 15px;
-  margin-top: 30px;
-  font-size: 25px;
+  font-size: 20px;
+  font-weight: bold;
 `;
 
 const ResponseButton = styled(Button)`
@@ -99,9 +125,5 @@ const ResponseButton = styled(Button)`
   height: 35px;
   margin: 20px 30px 0px 30px;
 `;
-
-ConfirmationModal.propTypes = {
-  setModalOn: PropTypes.func.isRequired,
-};
 
 export default ConfirmationModal;

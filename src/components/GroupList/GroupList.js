@@ -1,40 +1,116 @@
 import React from "react";
-import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import styled, { keyframes } from "styled-components";
 
 import Line from "../shared/Line";
 import Button from "../shared/Button";
 import ListItemContainer from "../shared/ListItemContainer";
-import MaincContainer from "../shared/MainContainer";
+import MainContainer from "../shared/MainContainer";
+import { setModalInfo } from "../../features/todoSlice";
 
 import pencil from "../../assets/images/icons/pencil.png";
 import exit from "../../assets/images/icons/exit.png";
 
-function GroupList() {
+const GroupList = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.user);
+
+  const handleCreateModalOpen = () => {
+    dispatch(
+      setModalInfo({
+        propsCategory: "CreateGroup",
+        todoModal: true,
+      })
+    );
+  };
+
+  const handleUpdateModalOpen = (id, updateTitle) => {
+    dispatch(
+      setModalInfo({
+        propsCategory: "UpdateGroup",
+        title: updateTitle,
+        groupId: id,
+        todoModal: true,
+      })
+    );
+  };
+
+  const handleDeleteModalOpen = (id) => {
+    dispatch(
+      setModalInfo({
+        confirmMessage: "방을 나가시겠습니까?",
+        propsCategory: "DeleteGroup",
+        groupId: id,
+        confirmModal: true,
+      })
+    );
+  };
+
+  const showGroupTodo = (id) => {
+    navigate(`/group/${id}`);
+  };
+
   return (
-    <MaincContainer>
-      <GroupListHeader>
-        <div className="listTitle">
-          <p className="title">Room</p>
-          <Line />
-        </div>
-      </GroupListHeader>
-      <ul className="listBody">
-        <ListItemContainer>
-          <p className="title">room title</p>
-          <div className="btnGroup">
-            <button className="updateBtn">
-              <img src={pencil} alt="pencil" />
-            </button>
-            <button className="deleteBtn">
-              <img src={exit} alt="exit" />
-            </button>
+    <GroupListMainContainer>
+      <div className="mainBody">
+        <GroupListHeader>
+          <div className="listTitle">
+            <p className="title">Room</p>
+            <Line />
           </div>
-        </ListItemContainer>
-      </ul>
-      <GroupCreateBtn>Create</GroupCreateBtn>
-    </MaincContainer>
+        </GroupListHeader>
+        <ul className="listBody">
+          {user.groups
+            && user.groups.map((item) => (
+              <ListItemContainer key={item._id}>
+                <button
+                  className="titleBtn"
+                  onClick={() => showGroupTodo(item._id)}
+                >
+                  <p className="title">{item.title}</p>
+                </button>
+                <div className="buttonContainer">
+                  <button
+                    className="updateBtn"
+                    onClick={() => handleUpdateModalOpen(item._id, item.title)}
+                  >
+                    <img src={pencil} alt="updateBtn" />
+                  </button>
+                  <button
+                    className="deleteBtn"
+                    onClick={() => handleDeleteModalOpen(item._id)}
+                  >
+                    <img src={exit} alt="deleteBtn" />
+                  </button>
+                </div>
+              </ListItemContainer>
+            ))}
+        </ul>
+        <GroupCreateBtn onClick={() => handleCreateModalOpen()}>
+          Create
+        </GroupCreateBtn>
+      </div>
+    </GroupListMainContainer>
   );
-}
+};
+
+const GroupListAnimation = keyframes`
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 50%, 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateZ(0);
+  }
+`;
+
+const GroupListMainContainer = styled(MainContainer)`
+  animation: ${GroupListAnimation} 0.5s linear;
+`;
 
 const GroupListHeader = styled.div`
   display: flex;
