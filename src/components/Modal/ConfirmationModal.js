@@ -57,7 +57,7 @@ const ConfirmationModal = () => {
         <Content>
           <MessageParagraph>{modalInfo.confirmMessage}</MessageParagraph>
           <div>
-            <ResponseButton onClick={handleSubmit}>YES</ResponseButton>
+            <ResponseButton onClick={() => handleSubmit()}>YES</ResponseButton>
             <ResponseButton onClick={() => closeModal()}>NO</ResponseButton>
           </div>
           <button className="closeBtn" onClick={() => closeModal()}>

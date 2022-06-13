@@ -80,7 +80,10 @@ const TodoList = ({ onFilterValue }) => {
             <p className="title">Todo</p>
             <Line />
           </div>
-          <TodoListDropDown value={selectItem} onChange={handleSelectItem}>
+          <TodoListDropDown
+            value={selectItem}
+            onChange={handleSelectItem}
+          >
             {selectList.map((item) => (
               <option value={item} key={item}>
                 {item}

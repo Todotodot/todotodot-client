@@ -70,7 +70,9 @@ const Login = () => {
         <div className="loginBorder">
           <img src={logo} alt="logo" />
           <div className="loginBtn">
-            <Button onClick={handleLogin}>Sign in with Google account</Button>
+            <Button onClick={() => handleLogin()}>
+              Sign in with Google account
+            </Button>
           </div>
         </div>
       </div>
