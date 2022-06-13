@@ -23,6 +23,9 @@
     "react/button-has-type": ["off", "always"],
     "linebreak-style": ["off", "windows"],
     "react/function-component-definition": ["off", "always"],
-    "react/jsx-boolean-value": ["off", "always"]
+    "react/jsx-boolean-value": ["off", "always"],
+    "jsx-a11y/label-has-associated-control": ["off", "always"],
+    "no-underscore-dangle": ["off", "always"],
+    "no-param-reassign": ["off", "always"]
   }
 }

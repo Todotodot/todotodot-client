@@ -1,44 +1,69 @@
 import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
-import PropTypes from "prop-types";
 
 import Portal from "../Portal/Portal";
 import Button from "../shared/Button";
-import catchAsync from "../../utils/catchAsync";
+import Line from "../shared/Line";
+import {
+  fetchGroupInfo,
+  fetchUserInfo,
+  setModalInfo,
+} from "../../features/todoSlice";
 import * as api from "../../api";
+import catchAsync from "../../utils/catchAsync";
 
-const TodoGroupModal = ({ setModalOn }) => {
-  const propsCategory = "";
-  const groupId = "";
-  const todoId = "";
-
+const TodoGroupModal = () => {
+  const dispatch = useDispatch();
+  const modalInfo = useSelector((state) => state.modalInfo);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
 
-  const handleSubmit = catchAsync(async () => {
-    switch (propsCategory) {
-      case "Create TODO":
+  const closeModal = () => {
+    dispatch(
+      setModalInfo({
+        propsCategory: modalInfo.propsCategory.includes("Group")
+          ? "Group"
+          : "TODO",
+      })
+    );
+  };
+
+  const handleSubmit = catchAsync(async (event) => {
+    event.preventDefault();
+
+    switch (modalInfo.propsCategory) {
+      case "CreateTODO":
         await api.createTodo({ title, content });
         break;
-      case "Create Group TODO":
-        await api.createGroupTodo(groupId, { title, content });
+      case "UpdateTODO":
+        await api.updateTodo(modalInfo.todoId, { title, content });
         break;
-      case "Update TODO":
-        await api.updateTodo(todoId, { title, content });
+      case "CreateGroupTODO":
+        await api.createGroupTodo(modalInfo.groupId, { title, content });
         break;
-      case "Update Group TODO":
-        await api.updateGroupTodo(groupId, todoId, { title, content });
+      case "UpdateGroupTODO":
+        await api.updateGroupTodo(modalInfo.groupId, modalInfo.todoId, {
+          title,
+          content,
+        });
         break;
-      case "Create Group":
+      case "CreateGroup":
         await api.createGroup({ title });
         break;
-      case "Update Group":
-        await api.updateGroup(groupId, { title });
+      case "UpdateGroup":
+        await api.updateGroup(modalInfo.groupId, { title });
         break;
       default:
     }
 
-    setModalOn(false);
+    if (modalInfo.groupId && modalInfo.propsCategory.includes("TODO")) {
+      dispatch(fetchGroupInfo(modalInfo));
+    } else {
+      dispatch(fetchUserInfo());
+    }
+
+    closeModal();
   });
 
   return (
@@ -47,27 +72,34 @@ const TodoGroupModal = ({ setModalOn }) => {
         <Content>
           <form>
             <CategoryWrapper>
-              <CategoryParagraph>{propsCategory}</CategoryParagraph>
+              <p>{modalInfo.propsCategory}</p>
+              <Line />
             </CategoryWrapper>
             <TitleInput
               type="text"
               placeholder="제목을 입력하세요."
-              value={title}
-              onChange={(ev) => setTitle(ev.target.value)}
+              name="title"
+              value={title || modalInfo.title || ""}
+              onChange={(event) => setTitle(event.target.value)}
             />
-            {groupId && (
-              <ContentTextarea
-                type="text"
-                placeholder="내용을 입력하세요."
-                value={content}
-                onChange={(ev) => setContent(ev.target.value)}
-              />
-            )}
-            <ResponseButton onClick={handleSubmit}>
-              {propsCategory.includes("Create") ? "Create" : "Update"}
+            {!(modalInfo.propsCategory === "CreateGroup"
+              || modalInfo.propsCategory === "UpdateGroup")
+              && (
+                <ContentTextarea
+                  type="text"
+                  placeholder="내용을 입력하세요."
+                  name="content"
+                  value={content || modalInfo.content || ""}
+                  onChange={(event) => setContent(event.target.value)}
+                />
+              )}
+            <ResponseButton onClick={() => handleSubmit()}>
+              {modalInfo.propsCategory.includes("Create") ? "Create" : "Update"}
             </ResponseButton>
           </form>
-          <CloseButton onClick={() => setModalOn(false)}>&#215;</CloseButton>
+          <button className="closeBtn" onClick={() => closeModal()}>
+            &#215;
+          </button>
         </Content>
       </Background>
     </Portal>
@@ -76,67 +108,71 @@ const TodoGroupModal = ({ setModalOn }) => {
 
 const Background = styled.div`
   box-sizing: border-box;
-  width: 100%;
-  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
   position: fixed;
   left: 0px;
   top: 0px;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(74, 74, 74, 0.5);
 `;
 
 const Content = styled.div`
-  width: 700px;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
   position: relative;
-  overflow: scroll;
-  background-color: white;
+  width: 700px;
   border: 4px solid #49251c;
   border-radius: 25px;
+  background-color: white;
   text-align: center;
-`;
+  overflow: scroll;
 
-const CloseButton = styled.button`
-  position: absolute;
-  top: 12px;
-  right: 15px;
-  background-color: Transparent;
-  border: none;
-  font-size: 40px;
+  .closeBtn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    border: none;
+    background-color: Transparent;
+    font-size: 40px;
+    font-family: "TTCrownMychewR";
+    cursor: pointer;
+  }
 `;
 
 const CategoryWrapper = styled.div`
-  display: flex;
-  justify-content: left;
-  margin-top: 10px;
-  margin-left: 48px;
-`;
+  float: left;
+  width: 100px;
+  margin: 15px 0 20px 48px;
 
-const CategoryParagraph = styled.p`
-  color: #ec7665;
-  border-bottom: 3px solid #49251c;
-  font-size: 40px;
+  p {
+    margin-bottom: 3px;
+    color: #ec7665;
+    font-size: 29px;
+    font-weight: bold;
+  }
 `;
 
 const TitleInput = styled.input`
-  width: 600px;
+  width: 590px;
   height: 40px;
+  margin-bottom: 10px;
+  padding: 0 5px;
   border: 4px solid #4a5280;
   border-radius: 10px;
-  margin-top: 20px;
   font-size: 22px;
 `;
 
 const ContentTextarea = styled.textarea`
-  width: 600px;
-  height: 260px;
+  width: 590px;
+  height: 240px;
+  padding: 10px 5px;
   border: 4px solid #4a5280;
   border-radius: 10px;
-  margin-top: 10px;
   font-size: 25px;
   resize: none;
 `;
@@ -146,9 +182,5 @@ const ResponseButton = styled(Button)`
   height: 35px;
   margin: 10px 30px 10px 30px;
 `;
-
-TodoGroupModal.propTypes = {
-  setModalOn: PropTypes.func.isRequired,
-};
 
 export default TodoGroupModal;

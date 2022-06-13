@@ -8,6 +8,17 @@ const GlobalStyle = createGlobalStyle`
     font-style: normal;
   }
 
+  @font-face {
+    font-family: 'DungGeunMo';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/DungGeunMo.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+  }
+
+  * {
+    font-family: 'DungGeunMo';
+  }
+
   html, body, div, span, applet, object, iframe,
   h1, h2, h3, h4, h5, h6, p, blockquote, pre,
   a, abbr, acronym, address, big, cite, code,
@@ -25,8 +36,8 @@ const GlobalStyle = createGlobalStyle`
     padding: 0;
     border: 0;
     font-size: 100%;
-    font: inherit;
     vertical-align: baseline;
+    color: #151515;
   }
 
   article, aside, details, figcaption, figure,
@@ -70,6 +81,10 @@ const GlobalStyle = createGlobalStyle`
   a:hover {
     color: black;
     text-decoration: none;
+  }
+
+  ::-webkit-scrollbar {
+    display: none;
   }
 `;
 
