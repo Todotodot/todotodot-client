@@ -1,20 +1,23 @@
 /* eslint-disable consistent-return */
-import React from "react";
+import { useRef, useEffect } from "react";
 
 const useTimeout = (callback, delay) => {
-  const savedCallback = React.useRef();
+  const savedCallback = useRef();
 
-  React.useEffect(() => {
+  useEffect(() => {
     savedCallback.current = callback;
   }, [callback]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const tick = () => {
       savedCallback.current();
     };
     if (delay !== null) {
       const id = setTimeout(tick, delay);
-      return () => clearTimeout(id);
+
+      return () => {
+        clearTimeout(id);
+      };
     }
   }, [delay]);
 };
