@@ -80,10 +80,7 @@ const TodoList = ({ onFilterValue }) => {
             <p className="title">Todo</p>
             <Line />
           </div>
-          <TodoListDropDown
-            value={selectItem}
-            onChange={handleSelectItem}
-          >
+          <TodoListDropDown value={selectItem} onChange={handleSelectItem}>
             {selectList.map((item) => (
               <option value={item} key={item}>
                 {item}
@@ -92,8 +89,8 @@ const TodoList = ({ onFilterValue }) => {
           </TodoListDropDown>
         </TodoListHeader>
         <ul className="listBody">
-          {user.todos
-            && user.todos.map((item) => (
+          {user.todos &&
+            user.todos.map((item) => (
               <ListItemContainer key={item._id}>
                 <label>
                   <input
@@ -106,14 +103,18 @@ const TodoList = ({ onFilterValue }) => {
                 </label>
                 <button
                   className="titleBtn"
-                  onClick={() => handleUpdateModalOpen(item._id, item.title, item.content)}
+                  onClick={() =>
+                    handleUpdateModalOpen(item._id, item.title, item.content)
+                  }
                 >
                   <p className="title">{item.title}</p>
                 </button>
                 <div className="buttonContainer">
                   <button
                     className="updateBtn"
-                    onClick={() => handleUpdateModalOpen(item._id, item.title, item.content)}
+                    onClick={() =>
+                      handleUpdateModalOpen(item._id, item.title, item.content)
+                    }
                   >
                     <img src={pencil} alt="updateBtn" />
                   </button>
