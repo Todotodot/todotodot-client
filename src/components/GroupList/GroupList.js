@@ -15,7 +15,7 @@ import exit from "../../assets/images/icons/exit.png";
 const GroupList = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.user);
+  const user = useSelector((state) => state.userInfo);
 
   const handleCreateModalOpen = () => {
     dispatch(
@@ -88,7 +88,7 @@ const GroupList = () => {
               </ListItemContainer>
             ))}
         </ul>
-        <GroupCreateBtn onClick={() => handleCreateModalOpen()}>
+        <GroupCreateBtn onClick={handleCreateModalOpen}>
           Create
         </GroupCreateBtn>
       </div>

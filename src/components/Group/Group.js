@@ -1,19 +1,29 @@
+/* eslint-disable operator-linebreak */
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 
 import Button from "../shared/Button";
 import UserList from "../UserList/UserList";
 import TodoList from "../TodoList/TodoList";
-import { authorization, fetchGroupInfo } from "../../features/todoSlice";
+import { addGroupMember } from "../../api/index";
+import {
+  authorization,
+  fetchGroupInfo,
+  fetchUserInfo,
+} from "../../features/todoSlice";
 import { firebaseAuth } from "../../config/firebase";
 import catchAsync from "../../utils/catchAsync";
 
 const Group = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const { id } = useParams();
+
+  const dispatch = useDispatch();
+  const userInfo = useSelector((state) => state.userInfo);
+  const groupInfo = useSelector((state) => state.groupInfo);
+
   const [searchValue, setSearchValue] = useState("");
   const [filterValue, setFilterValue] = useState("");
 
@@ -36,6 +46,32 @@ const Group = () => {
     }
   });
 
+  const handleAddGroupMember = catchAsync(async (groupId) => {
+    const result = await addGroupMember(groupId);
+
+    if (result.data.result === "success") {
+      dispatch(
+        fetchGroupInfo({
+          searchValue,
+          filterValue,
+          isGroup: true,
+          groupId: id,
+        })
+      );
+    }
+  });
+
+  // useEffect(() => {
+  //   dispatch(
+  //     fetchGroupInfo({
+  //       searchValue,
+  //       filterValue,
+  //       isGroup: true,
+  //       groupId: id,
+  //     })
+  //   );
+  // }, [dispatch, searchValue, filterValue]);
+
   useEffect(() => {
     dispatch(
       fetchGroupInfo({
@@ -45,11 +81,30 @@ const Group = () => {
         groupId: id,
       })
     );
+    dispatch(fetchUserInfo());
   }, [dispatch, searchValue, filterValue]);
+
+  useEffect(() => {
+    if (
+      Object.keys(userInfo).length !== 0 &&
+      Object.keys(groupInfo).length !== 0
+    ) {
+      const inCludesGroup = userInfo.groups.filter(
+        (item) => item._id === groupInfo._id
+      );
+      const inCludesUser = groupInfo.members.filter(
+        (item) => item._id === userInfo._id
+      );
+
+      if (inCludesGroup.length === 0 && inCludesUser.length === 0) {
+        handleAddGroupMember(groupInfo._id);
+      }
+    }
+  }, [userInfo, groupInfo]);
 
   return (
     <GroupStyle>
-      <Button className="logoutBtn" onClick={() => handleLogout()}>
+      <Button className="logoutBtn" onClick={handleLogout}>
         Logout
       </Button>
       <UserList onSearchValue={getSearchValue} />

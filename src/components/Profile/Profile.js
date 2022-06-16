@@ -16,7 +16,7 @@ import blueSlimeIdle from "../../assets/images/characters/blueslime-idle.png";
 
 const Profile = ({ onSearchValue }) => {
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.user);
+  const user = useSelector((state) => state.userInfo);
   const [showSetting, setShowSetting] = useState(false);
 
   const handleClick = (mode) => {
@@ -75,7 +75,7 @@ const Profile = ({ onSearchValue }) => {
         <Button onClick={() => handleClick("TODO")}>Personal Todo</Button>
         <Button onClick={() => handleClick("Group")}>Group List</Button>
       </ButtonContainer>
-      <button className="settingBtn" onClick={() => handleShowSetting()}>
+      <button className="settingBtn" onClick={handleShowSetting}>
         <img src={settingIcon} alt="settingBtn" />
       </button>
       <SettingContainer isShow={showSetting ? "block" : "none"}>

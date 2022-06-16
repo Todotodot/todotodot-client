@@ -17,10 +17,12 @@ import pencil from "../../assets/images/icons/pencil.png";
 import trashCan from "../../assets/images/icons/trash-can.png";
 
 const TodoList = ({ onFilterValue }) => {
-  const dispatch = useDispatch();
   const { id } = useParams();
+
+  const dispatch = useDispatch();
   const user = useSelector((state) => state.userInfo);
   const group = useSelector((state) => state.groupInfo);
+
   const [todoList, setTodoList] = useState(null);
   const [selectItem, setSelectItem] = useState("inCompleted");
   const selectList = ["inCompleted", "Completed", "All"];
