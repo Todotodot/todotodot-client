@@ -61,17 +61,6 @@ const Group = () => {
     }
   });
 
-  // useEffect(() => {
-  //   dispatch(
-  //     fetchGroupInfo({
-  //       searchValue,
-  //       filterValue,
-  //       isGroup: true,
-  //       groupId: id,
-  //     })
-  //   );
-  // }, [dispatch, searchValue, filterValue]);
-
   useEffect(() => {
     dispatch(
       fetchGroupInfo({
