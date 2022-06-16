@@ -1,8 +1,5 @@
-<<<<<<< HEAD
 /* eslint-disable array-callback-return */
 /* eslint-disable no-sequences */
-=======
->>>>>>> 1de9ab6418348477f44d971d00cf43b238637141
 /* eslint-disable operator-linebreak */
 /* eslint-disable react/jsx-one-expression-per-line */
 /* eslint-disable consistent-return */
@@ -15,17 +12,10 @@ import Sprite from "react-responsive-spritesheet";
 import { debounce } from "lodash";
 
 import { setModalInfo } from "../../features/todoSlice";
-<<<<<<< HEAD
 import { charactersAttackInfo } from "../../constants/charactersInfo";
 
 import inGameBackground from "../../assets/images/inGameBackground.png";
 import boss from "../../assets/images/characters/HugeMushroom.png";
-=======
-
-import inGameBackground from "../../assets/images/inGameBackground.png";
-import boss from "../../assets/images/characters/HugeMushroom.png";
-import earthWizardAttack from "../../assets/images/characters/EarthWizard-attack.png";
->>>>>>> 1de9ab6418348477f44d971d00cf43b238637141
 
 const Game = () => {
   const user = useSelector((state) => state.userInfo);
@@ -47,7 +37,6 @@ const Game = () => {
   const [sprites, setSprites] = useState(null);
   const [bossSprite, setBossSprite] = useState(null);
   const [state, setState] = useState(false);
-<<<<<<< HEAD
   const [spriteInfos, setSpriteInfos] = useState([]);
 
   const dispatch = useDispatch();
@@ -85,11 +74,6 @@ const Game = () => {
     });
   };
 
-=======
-
-  const dispatch = useDispatch();
-
->>>>>>> 1de9ab6418348477f44d971d00cf43b238637141
   useEffect(() => {
     if (groupId) {
       return;
@@ -113,11 +97,9 @@ const Game = () => {
 
     setSocket(socketIo);
 
-<<<<<<< HEAD
     const infos = groupSpriteInfos();
     setSpriteInfos(infos);
-=======
->>>>>>> 1de9ab6418348477f44d971d00cf43b238637141
+
     return () => {
       socketIo.disconnect();
     };
