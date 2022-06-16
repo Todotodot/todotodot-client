@@ -39,6 +39,20 @@ const Game = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    if (groupId) {
+      return;
+    }
+
+    const interval = setInterval(() => {
+      setGameSecond(gameSecond + 1);
+    }, 1000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [gameSecond]);
+
+  useEffect(() => {
     if (!groupId) {
       return;
     }
@@ -83,7 +97,9 @@ const Game = () => {
       setLoadingSecond(loadingSecondData);
     });
 
-    return () => clearInterval(interval);
+    return () => {
+      clearInterval(interval);
+    };
   }, [socket, loadingSecond, memberCounter]);
 
   useEffect(() => {
@@ -103,7 +119,9 @@ const Game = () => {
       setGameSecond(gameSecondData);
     });
 
-    return () => clearInterval(interval);
+    return () => {
+      clearInterval(interval);
+    };
   }, [socket, gameSecond, memberCounter]);
 
   useEffect(() => {
@@ -181,7 +199,9 @@ const Game = () => {
         }
       }, 10000);
 
-      return () => clearTimeout(timeout);
+      return () => {
+        clearTimeout(timeout);
+      };
     }
   }, [memberCounter]);
 
@@ -259,7 +279,9 @@ const Game = () => {
           );
         }, 10000);
 
-        return () => clearTimeout(timeout);
+        return () => {
+          clearTimeout(timeout);
+        };
       }
     }
   }, [memberCounter, totalClick]);
@@ -279,64 +301,66 @@ const Game = () => {
         );
       }, 10000);
 
-      return () => clearTimeout(timeout);
+      return () => {
+        clearTimeout(timeout);
+      };
     }
   }, [memberCounter, userClick]);
 
   return (
     <Background>
-      <ClockDiv>
-        <div className="clock">
-          <div className="second" />
-        </div>
-      </ClockDiv>
       {groupId && members && members.length > memberCounter ? (
-        <MessageDiv>
-          <p className="loadingSecond">{loadingSecond}</p>
-          <p className="title">모든 인원이 참여해야 몬스터가 나옵니다.</p>
-          <p className="title">현재 인원 수</p>
-          <p className="participants">
-            {memberCounter} / {members.length}
-          </p>
-        </MessageDiv>
+        <>
+          <ClockDiv>{loadingSecond}</ClockDiv>
+          <MessageDiv>
+            <p className="loadingSecond">{loadingSecond}</p>
+            <p className="title">모든 인원이 참여해야 몬스터가 나옵니다.</p>
+            <p className="title">현재 인원 수</p>
+            <p className="participants">
+              {memberCounter} / {members.length}
+            </p>
+          </MessageDiv>
+        </>
       ) : (
-        <GameContainer>
-          <StatusBarContainer totalClick={groupId ? totalClick : userClick}>
-            <StatusBar />
-          </StatusBarContainer>
-          <p className="gameSecond">{gameSecond}</p>
-          <CharactersContainer>
-            <WizardAttack
-              image={earthWizardAttack}
-              widthFrame={480}
-              heightFrame={590}
-              steps={12}
-              fps={15}
-              autoplay={state}
-              loop={true}
-              getInstance={(spritesheet) => {
-                setSprites(spritesheet);
-              }}
-            />
-            <Boss
-              image={boss}
-              widthFrame={810}
-              heightFrame={1300}
-              steps={12}
-              fps={8}
-              startAt={1}
-              endAt={4}
-              autoplay={true}
-              loop={true}
-              getInstance={(spritesheet) => {
-                setBossSprite(spritesheet);
-              }}
-              onMouseDown={play}
-              onMouseUp={clickDebounce}
-              onClick={click}
-            />
-          </CharactersContainer>
-        </GameContainer>
+        <>
+          <ClockDiv>{gameSecond}</ClockDiv>
+          <GameContainer>
+            <StatusBarContainer totalClick={groupId ? totalClick : userClick}>
+              <StatusBar />
+            </StatusBarContainer>
+            <CharactersContainer>
+              <WizardAttack
+                image={earthWizardAttack}
+                widthFrame={480}
+                heightFrame={590}
+                steps={12}
+                fps={15}
+                autoplay={state}
+                loop={true}
+                getInstance={(spritesheet) => {
+                  setSprites(spritesheet);
+                }}
+              />
+              <Boss
+                image={boss}
+                widthFrame={810}
+                heightFrame={1300}
+                steps={12}
+                fps={8}
+                startAt={1}
+                endAt={4}
+                autoplay={true}
+                loop={true}
+                getInstance={(spritesheet) => {
+                  setBossSprite(spritesheet);
+                }}
+                onMouseDown={play}
+                onMouseUp={clickDebounce}
+                onClick={click}
+              />
+            </CharactersContainer>
+          </GameContainer>
+        </>
       )}
       {groupId && (
         <MemberClickContainer>
@@ -368,45 +392,11 @@ const Background = styled.div`
 `;
 
 const ClockDiv = styled.div`
+  color: white;
   position: absolute;
   top: 40px;
   right: 50px;
-
-  .clock {
-    background: #4969a3;
-    border-radius: 50%;
-    border: 3px solid #0a0a0a;
-    box-sizing: border-box;
-    height: 150px;
-    margin: 0 auto;
-    position: relative;
-    width: 150px;
-  }
-
-  .second {
-    height: 50px;
-    width: 4px;
-    background: #0a0a0a;
-    position: absolute;
-    left: 50%;
-    top: 25px;
-    animation: tick 30s infinite linear;
-    -webkit-animation: tick 30s infinite linear;
-    transform-origin: 2px 100%;
-    -webkit-transform-origin: 2px 100%;
-  }
-
-  @keyframes tick {
-    to {
-      transform: rotate(360deg);
-    }
-  }
-
-  @-webkit-keyframes tick {
-    to {
-      -webkit-transform: rotate(360deg);
-    }
-  }
+  font-size: 80px;
 `;
 
 const MessageDiv = styled.div`
@@ -416,11 +406,6 @@ const MessageDiv = styled.div`
   align-items: center;
   flex-direction: column;
   text-align: center;
-
-  .loadingSecond {
-    color: white;
-    font-size: 80px;
-  }
 
   .title {
     color: white;
@@ -442,11 +427,6 @@ const GameContainer = styled.div`
   justify-content: center;
   align-items: center;
   flex-direction: column;
-
-  .gameSecond {
-    color: white;
-    font-size: 80px;
-  }
 `;
 
 const StatusBarContainer = styled.div`
