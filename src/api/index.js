@@ -74,3 +74,13 @@ export const deleteGroupTodo = (groupId, todoId) => {
 export const deleteGroup = (groupId) => {
   return API.delete(`/groups/${groupId}`);
 };
+
+export const completeTodo = (todoId, userData) => {
+  return API.patch(`/users/todos/${todoId}/complete`, { ...userData });
+};
+
+export const completeGroupTodo = (groupId, todoId, userData) => {
+  return API.patch(`/groups/${groupId}/todos/${todoId}/complete`, {
+    ...userData,
+  });
+};
