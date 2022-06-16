@@ -1,3 +1,4 @@
+/* eslint-disable default-case */
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
@@ -61,7 +62,6 @@ const TodoGroupModal = () => {
           title: title ?? modalInfo.title,
         });
         break;
-      default:
     }
 
     if (modalInfo.groupId && modalInfo.propsCategory.includes("TODO")) {
@@ -89,17 +89,18 @@ const TodoGroupModal = () => {
               value={title || ""}
               onChange={(event) => setTitle(event.target.value)}
             />
-            {!(modalInfo.propsCategory === "CreateGroup"
-              || modalInfo.propsCategory === "UpdateGroup")
-              && (
-                <ContentTextarea
-                  type="text"
-                  placeholder="내용을 입력하세요."
-                  name="content"
-                  value={content || ""}
-                  onChange={(event) => setContent(event.target.value)}
-                />
-              )}
+            {!(
+              modalInfo.propsCategory === "CreateGroup" ||
+              modalInfo.propsCategory === "UpdateGroup"
+            ) && (
+              <ContentTextarea
+                type="text"
+                placeholder="내용을 입력하세요."
+                name="content"
+                value={content || ""}
+                onChange={(event) => setContent(event.target.value)}
+              />
+            )}
             <ResponseButton onClick={handleSubmit}>
               {modalInfo.propsCategory.includes("Create") ? "Create" : "Update"}
             </ResponseButton>

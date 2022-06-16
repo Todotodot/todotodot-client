@@ -1,3 +1,4 @@
+/* eslint-disable default-case */
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -47,7 +48,6 @@ const ConfirmationModal = () => {
       case "TODO":
         navigate(`inGame/todos/${modalInfo.todoId}`);
         break;
-      default:
     }
 
     if (modalInfo.groupId && modalInfo.propsCategory.includes("TODO")) {
