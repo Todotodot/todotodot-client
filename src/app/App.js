@@ -11,7 +11,7 @@ import styled from "styled-components";
 import Login from "../components/Login/Login";
 import Main from "../components/Main/Main";
 import Group from "../components/Group/Group";
-import InGame from "../components/Game/InGame";
+import Game from "../components/Game/Game";
 import Error from "../components/Error/Error";
 import TodoGroupModal from "../components/Modal/TodoGroupModal";
 import GameResultModal from "../components/Modal/GameResultModal";
@@ -39,8 +39,15 @@ const App = () => {
             path="/group/:id"
             element={isLoggedIn ? <Group /> : <Navigate to="/login" replace />}
           />
-          <Route path="/inGame" element={<InGame />} />
           <Route path="*" element={<Error />} />
+          <Route
+            path="/inGame/todos/:todoId"
+            element={isLoggedIn ? <Game /> : <Navigate to="/login" replace />}
+          />
+          <Route
+            path="/inGame/:groupId/todos/:todoId"
+            element={isLoggedIn ? <Game /> : <Navigate to="/login" replace />}
+          />
         </Routes>
         {modalInfo.todoModal && <TodoGroupModal />}
         {modalInfo.gameModal && <GameResultModal />}

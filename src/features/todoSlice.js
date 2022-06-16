@@ -31,7 +31,8 @@ export const fetchGroupInfo = createAsyncThunk(
 const todoSlice = createSlice({
   name: "todoSlice",
   initialState: {
-    user: {},
+    userInfo: {},
+    groupInfo: {},
     isLoggedIn: localStorage.getItem("profile") || false,
     modalInfo: {
       propsCategory: "TODO",
@@ -47,11 +48,11 @@ const todoSlice = createSlice({
   },
   extraReducers: {
     [fetchUserInfo.fulfilled]: (state, action) => {
-      state.user = action.payload;
+      state.userInfo = action.payload;
       state.isLoggedIn = true;
     },
     [fetchGroupInfo.fulfilled]: (state, action) => {
-      state.user = action.payload;
+      state.groupInfo = action.payload;
       state.isLoggedIn = true;
     },
   },

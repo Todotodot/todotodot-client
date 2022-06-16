@@ -1,5 +1,6 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 import Portal from "../Portal/Portal";
@@ -13,6 +14,7 @@ import {
 import * as api from "../../api";
 
 const ConfirmationModal = () => {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const modalInfo = useSelector((state) => state.modalInfo);
 
@@ -39,6 +41,12 @@ const ConfirmationModal = () => {
       case "DeleteGroup":
         await api.deleteGroup(modalInfo.groupId);
         break;
+      case "Group":
+        navigate(`/inGame/${modalInfo.groupId}/todos/${modalInfo.todoId}`);
+        break;
+      case "TODO":
+        navigate(`inGame/todos/${modalInfo.todoId}`);
+        break;
       default:
     }
 
@@ -57,10 +65,10 @@ const ConfirmationModal = () => {
         <Content>
           <MessageParagraph>{modalInfo.confirmMessage}</MessageParagraph>
           <div>
-            <ResponseButton onClick={() => handleSubmit()}>YES</ResponseButton>
-            <ResponseButton onClick={() => closeModal()}>NO</ResponseButton>
+            <ResponseButton onClick={handleSubmit}>YES</ResponseButton>
+            <ResponseButton onClick={closeModal}>NO</ResponseButton>
           </div>
-          <button className="closeBtn" onClick={() => closeModal()}>
+          <button className="closeBtn" onClick={closeModal}>
             &#215;
           </button>
         </Content>

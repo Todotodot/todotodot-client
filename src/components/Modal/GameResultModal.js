@@ -1,17 +1,59 @@
 import React from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import PropTypes from "prop-types";
 
 import Portal from "../Portal/Portal";
+import catchAsync from "../../utils/catchAsync";
+import { setModalInfo } from "../../features/todoSlice";
+import * as api from "../../api/index";
 
-const GameResultModal = ({ setModalOn }) => {
+const GameResultModal = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const modalInfo = useSelector((state) => state.modalInfo);
+
+  const closeModal = () => {
+    dispatch(
+      setModalInfo({
+        propsCategory: modalInfo.propsCategory.includes("Group")
+          ? "Group"
+          : "TODO",
+      })
+    );
+
+    if (modalInfo.propsCategory.includes("Group")) {
+      navigate(`/group/${modalInfo.groupId}`);
+    } else {
+      navigate("/");
+    }
+  };
+
+  const handleGameEnd = catchAsync(async () => {
+    switch (modalInfo.propsCategory) {
+      case "CompleteTODO":
+        await api.completeTodo(modalInfo.todoId, modalInfo.userData);
+        break;
+      case "CompleteGroupTODO":
+        await api.completeGroupTodo(
+          modalInfo.groupId,
+          modalInfo.todoId,
+          modalInfo.userData
+        );
+        break;
+      default:
+    }
+  });
+
+  handleGameEnd();
+
   return (
     <Portal>
       <Background>
         <Content>
-          <TitleParagraph>props title</TitleParagraph>
-          <MessageParagraph>props message</MessageParagraph>
-          <CloseButton onClick={() => setModalOn(false)}>&#215;</CloseButton>
+          <TitleParagraph>{modalInfo.title}</TitleParagraph>
+          <MessageParagraph>{modalInfo.message}</MessageParagraph>
+          <CloseButton onClick={closeModal}>&#215;</CloseButton>
         </Content>
       </Background>
     </Portal>
@@ -70,9 +112,5 @@ const MessageParagraph = styled.p`
   margin-top: 30px;
   font-size: 25px;
 `;
-
-GameResultModal.propTypes = {
-  setModalOn: PropTypes.func.isRequired,
-};
 
 export default GameResultModal;

@@ -1,4 +1,7 @@
-import React, { useState } from "react";
+/* eslint-disable react/jsx-curly-newline */
+/* eslint-disable operator-linebreak */
+/* eslint-disable implicit-arrow-linebreak */
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import styled, { keyframes } from "styled-components";
@@ -16,7 +19,9 @@ import trashCan from "../../assets/images/icons/trash-can.png";
 const TodoList = ({ onFilterValue }) => {
   const dispatch = useDispatch();
   const { id } = useParams();
-  const user = useSelector((state) => state.user);
+  const user = useSelector((state) => state.userInfo);
+  const group = useSelector((state) => state.groupInfo);
+  const [todoList, setTodoList] = useState(null);
   const [selectItem, setSelectItem] = useState("inCompleted");
   const selectList = ["inCompleted", "Completed", "All"];
 
@@ -55,12 +60,15 @@ const TodoList = ({ onFilterValue }) => {
     );
   };
 
-  const handleGameModalOpen = () => {
+  const handleGameModalOpen = (todoId) => {
     dispatch(
       setModalInfo({
         confirmMessage: "게임을 시작하시겠습니까?",
         propsCategory: id ? "Group" : "TODO",
         confirmModal: true,
+        user,
+        groupId: id,
+        todoId,
       })
     );
   };
@@ -71,6 +79,14 @@ const TodoList = ({ onFilterValue }) => {
     setSelectItem(value);
     onFilterValue(value);
   };
+
+  useEffect(() => {
+    if (id && group.todos) {
+      setTodoList(group.todos);
+    } else {
+      setTodoList(user.todos);
+    }
+  });
 
   return (
     <TodoListMainContainer>
@@ -89,15 +105,16 @@ const TodoList = ({ onFilterValue }) => {
           </TodoListDropDown>
         </TodoListHeader>
         <ul className="listBody">
-          {user.todos &&
-            user.todos.map((item) => (
+          {todoList &&
+            todoList.map((item) => (
               <ListItemContainer key={item._id}>
                 <label>
                   <input
                     type="checkbox"
                     className="todoCompleteBtn"
                     name="completed"
-                    onClick={() => handleGameModalOpen()}
+                    checked={item.isCompleted}
+                    onChange={() => handleGameModalOpen(item._id)}
                   />
                   <span className="checkbox" />
                 </label>
@@ -128,9 +145,7 @@ const TodoList = ({ onFilterValue }) => {
               </ListItemContainer>
             ))}
         </ul>
-        <TodoCreateBtn onClick={() => handleCreateModalOpen()}>
-          Create
-        </TodoCreateBtn>
+        <TodoCreateBtn onClick={handleCreateModalOpen}>Create</TodoCreateBtn>
       </div>
     </TodoListMainContainer>
   );
