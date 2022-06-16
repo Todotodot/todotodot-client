@@ -39,7 +39,6 @@ const App = () => {
             path="/group/:id"
             element={isLoggedIn ? <Group /> : <Navigate to="/login" replace />}
           />
-          <Route path="*" element={<Error />} />
           <Route
             path="/inGame/todos/:todoId"
             element={isLoggedIn ? <Game /> : <Navigate to="/login" replace />}
@@ -48,6 +47,7 @@ const App = () => {
             path="/inGame/:groupId/todos/:todoId"
             element={isLoggedIn ? <Game /> : <Navigate to="/login" replace />}
           />
+          <Route path="*" element={<Error />} />
         </Routes>
         {modalInfo.todoModal && <TodoGroupModal />}
         {modalInfo.gameModal && <GameResultModal />}
