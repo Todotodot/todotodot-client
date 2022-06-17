@@ -6,7 +6,6 @@ import styled from "styled-components";
 
 import Portal from "../Portal/Portal";
 import Button from "../shared/Button";
-import catchAsync from "../../utils/catchAsync";
 import {
   fetchGroupInfo,
   fetchUserInfo,
@@ -29,7 +28,7 @@ const ConfirmationModal = () => {
     );
   };
 
-  const handleSubmit = catchAsync(async (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
     switch (modalInfo.propsCategory) {
@@ -57,7 +56,7 @@ const ConfirmationModal = () => {
     }
 
     closeModal();
-  });
+  };
 
   return (
     <Portal>

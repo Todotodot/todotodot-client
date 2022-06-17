@@ -10,7 +10,6 @@ import { debounce } from "lodash";
 
 import Button from "../shared/Button";
 import Line from "../shared/Line";
-import catchAsync from "../../utils/catchAsync";
 
 import backButton from "../../assets/images/icons/back-button.png";
 import searchIcon from "../../assets/images/icons/search-icon.png";
@@ -29,13 +28,13 @@ const UserList = ({ onSearchValue }) => {
     navigate("/");
   };
 
-  const handleCopyClipBoard = catchAsync(async () => {
+  const handleCopyClipBoard = async () => {
     await navigator.clipboard.writeText(
       `http://localhost:3000${location.pathname}`
     );
 
     alert(`Copy Success!!\n[ http://localhost:3000${location.pathname} ]`);
-  });
+  };
 
   const handleShowSetting = () => {
     setShowSetting((open) => !open);

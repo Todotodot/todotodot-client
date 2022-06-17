@@ -14,7 +14,6 @@ import {
   fetchUserInfo,
 } from "../../features/todoSlice";
 import { firebaseAuth } from "../../config/firebase";
-import catchAsync from "../../utils/catchAsync";
 
 const Group = () => {
   const navigate = useNavigate();
@@ -35,7 +34,7 @@ const Group = () => {
     setSearchValue(result);
   };
 
-  const handleLogout = catchAsync(async () => {
+  const handleLogout = async () => {
     await firebaseAuth.signOut();
 
     localStorage.removeItem("profile");
@@ -44,9 +43,9 @@ const Group = () => {
       dispatch(authorization());
       navigate("/login");
     }
-  });
+  };
 
-  const handleAddGroupMember = catchAsync(async (groupId) => {
+  const handleAddGroupMember = async (groupId) => {
     const result = await addGroupMember(groupId);
 
     if (result.data.result === "success") {
@@ -59,7 +58,7 @@ const Group = () => {
         })
       );
     }
-  });
+  };
 
   useEffect(() => {
     dispatch(

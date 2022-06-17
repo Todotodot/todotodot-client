@@ -9,7 +9,6 @@ import TodoList from "../TodoList/TodoList";
 import GroupList from "../GroupList/GroupList";
 import { firebaseAuth } from "../../config/firebase";
 import { authorization, fetchUserInfo } from "../../features/todoSlice";
-import catchAsync from "../../utils/catchAsync";
 
 const Main = () => {
   const navigate = useNavigate();
@@ -26,7 +25,7 @@ const Main = () => {
     setSearchValue(result);
   };
 
-  const handleLogout = catchAsync(async () => {
+  const handleLogout = async () => {
     await firebaseAuth.signOut();
 
     localStorage.removeItem("profile");
@@ -35,7 +34,7 @@ const Main = () => {
       dispatch(authorization());
       navigate("/login");
     }
-  });
+  };
 
   useEffect(() => {
     dispatch(

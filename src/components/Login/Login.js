@@ -12,7 +12,6 @@ import {
 } from "../../config/firebase";
 import { login } from "../../api/index";
 import { fetchUserInfo } from "../../features/todoSlice";
-import catchAsync from "../../utils/catchAsync";
 
 import orangeSlime from "../../assets/images/characters/orangeSlime_attack.png";
 import boss from "../../assets/images/characters/hugeMushroom_attack2.png";
@@ -23,7 +22,7 @@ const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const handleLogin = catchAsync(async () => {
+  const handleLogin = async () => {
     const data = await googlePopup(firebaseAuth, googleProvider);
     const token = await data.user.getIdToken();
 
@@ -36,7 +35,7 @@ const Login = () => {
         navigate("/");
       }
     }
-  });
+  };
 
   return (
     <LoginStyle>
