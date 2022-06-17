@@ -21,7 +21,7 @@ import shareIcon from "../../assets/images/icons/share.png";
 const UserList = ({ onSearchValue }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const user = useSelector((state) => state.user);
+  const group = useSelector((state) => state.groupInfo);
   const [showSetting, setShowSetting] = useState(false);
 
   const backToMain = () => {
@@ -51,17 +51,17 @@ const UserList = ({ onSearchValue }) => {
   return (
     <UserListStyle>
       <ListNavBar>
-        <button className="backButton" onClick={() => backToMain()}>
+        <button className="backButton" onClick={backToMain}>
           <img src={backButton} alt="backButton" />
         </button>
         <p className="emoji">🐮</p>
-        <p className="infoText">{user.title}</p>
+        <p className="infoText">{group.title}</p>
       </ListNavBar>
       <ListContainer>
         <div className="userText">
           <div>
             <span className="text">Member</span>
-            <button className="shareBtn" onClick={() => handleCopyClipBoard()}>
+            <button className="shareBtn" onClick={handleCopyClipBoard}>
               <img src={shareIcon} alt="shareBtn" />
             </button>
           </div>
@@ -69,8 +69,8 @@ const UserList = ({ onSearchValue }) => {
         </div>
         <div className="listWrapper">
           <ul className="userList">
-            {user.members &&
-              user.members.map((member) => (
+            {group.members &&
+              group.members.map((member) => (
                 <li key={member._id} className="member">
                   <p className="emoji">🔥</p>
                   <p className="memberName">{member.name}</p>
@@ -83,7 +83,7 @@ const UserList = ({ onSearchValue }) => {
         <img className="icon" src={searchIcon} alt="icon" />
         <input type="text" className="searchBar" onChange={debounceSearch} />
       </SearchBarContainer>
-      <button className="settingBtn" onClick={() => handleShowSetting()}>
+      <button className="settingBtn" onClick={handleShowSetting}>
         <img src={settingIcon} alt="settingBtn" />
       </button>
       <SettingContainer isShow={showSetting ? "block" : "none"}>

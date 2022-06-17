@@ -84,3 +84,7 @@ export const completeGroupTodo = (groupId, todoId, userData) => {
     ...userData,
   });
 };
+
+export const addGroupMember = (groupId) => {
+  return API.patch(`/groups/${groupId}/addMember`);
+};

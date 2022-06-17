@@ -50,7 +50,7 @@ const Main = () => {
 
   return (
     <MainStyle>
-      <Button className="logoutBtn" onClick={() => handleLogout()}>
+      <Button className="logoutBtn" onClick={handleLogout}>
         Logout
       </Button>
       <Profile onSearchValue={getSearchValue} />

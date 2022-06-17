@@ -1,3 +1,4 @@
+/* eslint-disable default-case */
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
@@ -16,8 +17,10 @@ import catchAsync from "../../utils/catchAsync";
 const TodoGroupModal = () => {
   const dispatch = useDispatch();
   const modalInfo = useSelector((state) => state.modalInfo);
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
+  const [title, setTitle] = useState("" || (modalInfo && modalInfo.title));
+  const [content, setContent] = useState(
+    "" || (modalInfo && modalInfo.content)
+  );
 
   const closeModal = () => {
     dispatch(
@@ -37,24 +40,28 @@ const TodoGroupModal = () => {
         await api.createTodo({ title, content });
         break;
       case "UpdateTODO":
-        await api.updateTodo(modalInfo.todoId, { title, content });
+        await api.updateTodo(modalInfo.todoId, {
+          title: title ?? modalInfo.title,
+          content: content ?? modalInfo.content,
+        });
         break;
       case "CreateGroupTODO":
         await api.createGroupTodo(modalInfo.groupId, { title, content });
         break;
       case "UpdateGroupTODO":
         await api.updateGroupTodo(modalInfo.groupId, modalInfo.todoId, {
-          title,
-          content,
+          title: title ?? modalInfo.title,
+          content: content ?? modalInfo.content,
         });
         break;
       case "CreateGroup":
         await api.createGroup({ title });
         break;
       case "UpdateGroup":
-        await api.updateGroup(modalInfo.groupId, { title });
+        await api.updateGroup(modalInfo.groupId, {
+          title: title ?? modalInfo.title,
+        });
         break;
-      default:
     }
 
     if (modalInfo.groupId && modalInfo.propsCategory.includes("TODO")) {
@@ -79,25 +86,26 @@ const TodoGroupModal = () => {
               type="text"
               placeholder="제목을 입력하세요."
               name="title"
-              value={title || modalInfo.title || ""}
+              value={title || ""}
               onChange={(event) => setTitle(event.target.value)}
             />
-            {!(modalInfo.propsCategory === "CreateGroup"
-              || modalInfo.propsCategory === "UpdateGroup")
-              && (
-                <ContentTextarea
-                  type="text"
-                  placeholder="내용을 입력하세요."
-                  name="content"
-                  value={content || modalInfo.content || ""}
-                  onChange={(event) => setContent(event.target.value)}
-                />
-              )}
-            <ResponseButton onClick={() => handleSubmit()}>
+            {!(
+              modalInfo.propsCategory === "CreateGroup" ||
+              modalInfo.propsCategory === "UpdateGroup"
+            ) && (
+              <ContentTextarea
+                type="text"
+                placeholder="내용을 입력하세요."
+                name="content"
+                value={content || ""}
+                onChange={(event) => setContent(event.target.value)}
+              />
+            )}
+            <ResponseButton onClick={handleSubmit}>
               {modalInfo.propsCategory.includes("Create") ? "Create" : "Update"}
             </ResponseButton>
           </form>
-          <button className="closeBtn" onClick={() => closeModal()}>
+          <button className="closeBtn" onClick={closeModal}>
             &#215;
           </button>
         </Content>
