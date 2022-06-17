@@ -1,4 +1,5 @@
 /* eslint-disable operator-linebreak */
+/* eslint-disable default-case */
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
@@ -16,8 +17,8 @@ import * as api from "../../api";
 const TodoGroupModal = () => {
   const dispatch = useDispatch();
   const modalInfo = useSelector((state) => state.modalInfo);
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
+  const [title, setTitle] = useState("" || modalInfo.title);
+  const [content, setContent] = useState("" || modalInfo.content);
 
   const closeModal = () => {
     dispatch(
@@ -54,7 +55,6 @@ const TodoGroupModal = () => {
       case "UpdateGroup":
         await api.updateGroup(modalInfo.groupId, { title });
         break;
-      default:
     }
 
     if (modalInfo.groupId && modalInfo.propsCategory.includes("TODO")) {
@@ -79,7 +79,7 @@ const TodoGroupModal = () => {
               type="text"
               placeholder="제목을 입력하세요."
               name="title"
-              value={title || modalInfo.title || ""}
+              value={title || ""}
               onChange={(event) => setTitle(event.target.value)}
             />
             {!(
