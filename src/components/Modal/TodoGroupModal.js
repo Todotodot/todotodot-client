@@ -1,3 +1,4 @@
+/* eslint-disable default-case */
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
@@ -61,7 +62,6 @@ const TodoGroupModal = () => {
           title: title ?? modalInfo.title,
         });
         break;
-      default:
     }
 
     if (modalInfo.groupId && modalInfo.propsCategory.includes("TODO")) {
