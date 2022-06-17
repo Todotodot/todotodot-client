@@ -1,3 +1,4 @@
+/* eslint-disable no-alert */
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable operator-linebreak */
 import React, { useCallback, useState } from "react";
