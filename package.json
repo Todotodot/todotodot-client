@@ -62,5 +62,6 @@
   "lint-staged": {
     "*.js": "eslint --fix",
     "*.{js,css,md}": "prettier --write"
-  }
+  },
+  "homepage": "https://www.todotodot.com"
 }

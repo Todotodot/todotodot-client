@@ -1,6 +1,8 @@
 import Axios from "axios";
 
-const API = Axios.create({ baseURL: "http://localhost:5000" });
+const API = Axios.create({
+  baseURL: "http://todotodot-server-dev.ap-northeast-2.elasticbeanstalk.com",
+});
 
 API.interceptors.request.use((req) => {
   if (localStorage.getItem("profile")) {

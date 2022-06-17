@@ -7,7 +7,8 @@ import Line from "../shared/Line";
 import Button from "../shared/Button";
 import ListItemContainer from "../shared/ListItemContainer";
 import MainContainer from "../shared/MainContainer";
-import { setModalInfo } from "../../features/todoSlice";
+import { firebaseAuth } from "../../config/firebase";
+import { authorization, setModalInfo } from "../../features/todoSlice";
 
 import pencil from "../../assets/images/icons/pencil.png";
 import exit from "../../assets/images/icons/exit.png";
@@ -16,6 +17,17 @@ const GroupList = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const user = useSelector((state) => state.userInfo);
+
+  const handleLogout = async () => {
+    await firebaseAuth.signOut();
+
+    localStorage.removeItem("profile");
+
+    if (!localStorage.getItem("profile")) {
+      dispatch(authorization());
+      navigate("/login");
+    }
+  };
 
   const handleCreateModalOpen = () => {
     dispatch(
@@ -54,6 +66,9 @@ const GroupList = () => {
 
   return (
     <GroupListMainContainer>
+      <div className="logoutBtn">
+        <Button onClick={handleLogout}>Logout</Button>
+      </div>
       <div className="mainBody">
         <GroupListHeader>
           <div className="listTitle">
@@ -88,9 +103,7 @@ const GroupList = () => {
               </ListItemContainer>
             ))}
         </ul>
-        <GroupCreateBtn onClick={handleCreateModalOpen}>
-          Create
-        </GroupCreateBtn>
+        <GroupCreateBtn onClick={handleCreateModalOpen}>Create</GroupCreateBtn>
       </div>
     </GroupListMainContainer>
   );
@@ -110,6 +123,17 @@ const GroupListAnimation = keyframes`
 
 const GroupListMainContainer = styled(MainContainer)`
   animation: ${GroupListAnimation} 0.5s linear;
+
+  .logoutBtn {
+    width: 90%;
+
+    button {
+      float: right;
+      width: 120px;
+      height: 35px;
+      margin: 50px 0;
+    }
+  }
 `;
 
 const GroupListHeader = styled.div`
