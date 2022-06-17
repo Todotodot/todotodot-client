@@ -2,7 +2,7 @@
 /* eslint-disable operator-linebreak */
 /* eslint-disable implicit-arrow-linebreak */
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import styled, { keyframes } from "styled-components";
 import PropTypes from "prop-types";
@@ -11,13 +11,15 @@ import Line from "../shared/Line";
 import Button from "../shared/Button";
 import ListItemContainer from "../shared/ListItemContainer";
 import MainContainer from "../shared/MainContainer";
-import { setModalInfo } from "../../features/todoSlice";
+import { firebaseAuth } from "../../config/firebase";
+import { authorization, setModalInfo } from "../../features/todoSlice";
 
 import pencil from "../../assets/images/icons/pencil.png";
 import trashCan from "../../assets/images/icons/trash-can.png";
 
 const TodoList = ({ onFilterValue }) => {
   const { id } = useParams();
+  const navigate = useNavigate();
 
   const dispatch = useDispatch();
   const user = useSelector((state) => state.userInfo);
@@ -26,6 +28,17 @@ const TodoList = ({ onFilterValue }) => {
   const [todoList, setTodoList] = useState(null);
   const [selectItem, setSelectItem] = useState("inCompleted");
   const selectList = ["inCompleted", "Completed", "All"];
+
+  const handleLogout = async () => {
+    await firebaseAuth.signOut();
+
+    localStorage.removeItem("profile");
+
+    if (!localStorage.getItem("profile")) {
+      dispatch(authorization());
+      navigate("/login");
+    }
+  };
 
   const handleCreateModalOpen = () => {
     dispatch(
@@ -92,6 +105,9 @@ const TodoList = ({ onFilterValue }) => {
 
   return (
     <TodoListMainContainer>
+      <div className="logoutBtn">
+        <Button onClick={handleLogout}>Logout</Button>
+      </div>
       <div className="mainBody">
         <TodoListHeader>
           <div>
@@ -167,6 +183,17 @@ const TodoListAnimation = keyframes`
 
 const TodoListMainContainer = styled(MainContainer)`
   animation: ${TodoListAnimation} 0.5s linear;
+
+  .logoutBtn {
+    width: 90%;
+
+    button {
+      float: right;
+      width: 120px;
+      height: 35px;
+      margin: 50px 0;
+    }
+  }
 `;
 
 const TodoListHeader = styled.div`
@@ -196,10 +223,12 @@ const TodoListDropDown = styled.select`
 `;
 
 const TodoCreateBtn = styled(Button)`
-  float: right;
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
   width: 120px;
   height: 35px;
-  margin: 10px 20px;
+  margin: 0;
   padding: 2px 0;
 `;
 

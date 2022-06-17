@@ -15,7 +15,6 @@ import { fetchUserInfo } from "../../features/todoSlice";
 
 import orangeSlime from "../../assets/images/characters/orangeSlime_attack.png";
 import boss from "../../assets/images/characters/hugeMushroom_attack2.png";
-import exampleTodo from "../../assets/images/todo.png";
 import logo from "../../assets/images/logo.png";
 
 const Login = () => {
@@ -39,11 +38,10 @@ const Login = () => {
 
   return (
     <LoginStyle>
-      <div className="slidePart">
-        <div className="slideAnimation">
-          <p>Clicker와 TodoList가 만났다!!</p>
-          <img src={exampleTodo} alt="exampleTodo" />
-          <div className="sprites">
+      <div className="loginContainer">
+        <div className="loginBorder">
+          {/* <img src={logo} alt="logo" /> */}
+          <div className="sprite">
             <Boss
               image={boss}
               widthFrame={1050}
@@ -53,21 +51,7 @@ const Login = () => {
               autoplay={true}
               loop={true}
             />
-            <OrangeSlime
-              image={orangeSlime}
-              widthFrame={270}
-              heightFrame={212}
-              steps={3}
-              fps={8}
-              autoplay={true}
-              loop={true}
-            />
           </div>
-        </div>
-      </div>
-      <div className="loginContainer">
-        <div className="loginBorder">
-          <img src={logo} alt="logo" />
           <div className="loginBtn">
             <Button onClick={() => handleLogin()}>
               Sign in with Google account
@@ -78,18 +62,6 @@ const Login = () => {
     </LoginStyle>
   );
 };
-
-const LeftSectionAnimation = keyframes`
-  0% {
-    opacity: 0;
-    transform: translate3d(-100%, 0, 0);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateZ(0);
-  }
-`;
 
 const RightSectionAnimation = keyframes`
   0% {
@@ -104,50 +76,31 @@ const RightSectionAnimation = keyframes`
 `;
 
 const LoginStyle = styled.div`
-  display: flex;
-  text-align: center;
+  float: right;
   height: 100vh;
 
-  .slidePart {
-    width: 70%;
-    transform: translateY(20%);
-
-    .slideAnimation {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      animation: ${LeftSectionAnimation} 1s linear;
-
-      p {
-        font-size: 50px;
-        font-family: "TTCrownMychewR";
-      }
-
-      img {
-        width: 700px;
-      }
-
-      .sprites {
-        position: relative;
-        width: 700px;
-      }
-    }
-  }
-
   .loginContainer {
-    position: relative;
-    width: 30%;
-    height: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
     background-color: rgba(169, 170, 188, 0.5);
     animation: ${RightSectionAnimation} 0.5s linear;
 
     .loginBorder {
-      transform: translateY(90%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
 
       img {
         width: 250px;
       }
+    }
+
+    button {
+      margin-top: 0;
     }
   }
 `;
@@ -160,9 +113,6 @@ const OrangeSlime = styled(Sprite)`
 `;
 
 const Boss = styled(Sprite)`
-  position: absolute;
-  right: -60px;
-  bottom: 0;
   width: 300px;
 `;
 

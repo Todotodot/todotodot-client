@@ -1,6 +1,6 @@
 /* eslint-disable operator-linebreak */
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 
@@ -8,15 +8,9 @@ import Button from "../shared/Button";
 import UserList from "../UserList/UserList";
 import TodoList from "../TodoList/TodoList";
 import { addGroupMember } from "../../api/index";
-import {
-  authorization,
-  fetchGroupInfo,
-  fetchUserInfo,
-} from "../../features/todoSlice";
-import { firebaseAuth } from "../../config/firebase";
+import { fetchGroupInfo, fetchUserInfo } from "../../features/todoSlice";
 
 const Group = () => {
-  const navigate = useNavigate();
   const { id } = useParams();
 
   const dispatch = useDispatch();
@@ -32,17 +26,6 @@ const Group = () => {
 
   const getSearchValue = (result) => {
     setSearchValue(result);
-  };
-
-  const handleLogout = async () => {
-    await firebaseAuth.signOut();
-
-    localStorage.removeItem("profile");
-
-    if (!localStorage.getItem("profile")) {
-      dispatch(authorization());
-      navigate("/login");
-    }
   };
 
   const handleAddGroupMember = async (groupId) => {
@@ -92,9 +75,6 @@ const Group = () => {
 
   return (
     <GroupStyle>
-      <Button className="logoutBtn" onClick={handleLogout}>
-        Logout
-      </Button>
       <UserList onSearchValue={getSearchValue} />
       <TodoList onFilterValue={getFilterValue} />
     </GroupStyle>
@@ -103,16 +83,8 @@ const Group = () => {
 
 const GroupStyle = styled.div`
   display: flex;
-  justify-content: space-between;
-  position: relative;
-
-  .logoutBtn {
-    position: absolute;
-    top: -70px;
-    right: 10px;
-    width: 120px;
-    height: 35px;
-  }
+  width: 100vw;
+  height: 100vh;
 `;
 
 export default Group;
