@@ -90,7 +90,7 @@ const TodoGroupModal = () => {
                 type="text"
                 placeholder="내용을 입력하세요."
                 name="content"
-                value={content || modalInfo.content || ""}
+                value={content || ""}
                 onChange={(event) => setContent(event.target.value)}
               />
             )}
