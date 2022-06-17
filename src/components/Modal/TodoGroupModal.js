@@ -89,18 +89,17 @@ const TodoGroupModal = () => {
               value={title || ""}
               onChange={(event) => setTitle(event.target.value)}
             />
-            {!(
-              modalInfo.propsCategory === "CreateGroup" ||
-              modalInfo.propsCategory === "UpdateGroup"
-            ) && (
-              <ContentTextarea
-                type="text"
-                placeholder="내용을 입력하세요."
-                name="content"
-                value={content || ""}
-                onChange={(event) => setContent(event.target.value)}
-              />
-            )}
+            {!(modalInfo.propsCategory === "CreateGroup"
+              || modalInfo.propsCategory === "UpdateGroup")
+              && (
+                <ContentTextarea
+                  type="text"
+                  placeholder="내용을 입력하세요."
+                  name="content"
+                  value={content || ""}
+                  onChange={(event) => setContent(event.target.value)}
+                />
+              )}
             <ResponseButton onClick={handleSubmit}>
               {modalInfo.propsCategory.includes("Create") ? "Create" : "Update"}
             </ResponseButton>

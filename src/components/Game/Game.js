@@ -1,3 +1,5 @@
+/* eslint-disable array-callback-return */
+/* eslint-disable no-sequences */
 /* eslint-disable operator-linebreak */
 /* eslint-disable react/jsx-one-expression-per-line */
 /* eslint-disable consistent-return */
@@ -10,10 +12,10 @@ import Sprite from "react-responsive-spritesheet";
 import { debounce } from "lodash";
 
 import { setModalInfo } from "../../features/todoSlice";
+import { charactersAttackInfo } from "../../constants/charactersInfo";
 
 import inGameBackground from "../../assets/images/inGameBackground.png";
 import boss from "../../assets/images/characters/HugeMushroom.png";
-import earthWizardAttack from "../../assets/images/characters/EarthWizard-attack.png";
 
 const Game = () => {
   const user = useSelector((state) => state.userInfo);
@@ -35,8 +37,42 @@ const Game = () => {
   const [sprites, setSprites] = useState(null);
   const [bossSprite, setBossSprite] = useState(null);
   const [state, setState] = useState(false);
+  const [spriteInfos, setSpriteInfos] = useState([]);
 
   const dispatch = useDispatch();
+
+  const groupSpriteInfos = () => {
+    return group.members.map((member) => {
+      const {
+        SLIME_ATTACK,
+        SMALL_WIZARD_ATTACK,
+        FIRE_WIZARD_ATTACK,
+        EARTH_WIZARD_ATTACK,
+        WATER_WIZARD_ATTACK,
+      } = charactersAttackInfo;
+      const { level } = member;
+
+      if (level >= 0 && level < 5) {
+        return SLIME_ATTACK;
+      }
+
+      if (level >= 5 && level < 10) {
+        return SMALL_WIZARD_ATTACK;
+      }
+
+      if (level >= 10 && level < 15) {
+        return FIRE_WIZARD_ATTACK;
+      }
+
+      if (level >= 15 && level < 20) {
+        return EARTH_WIZARD_ATTACK;
+      }
+
+      if (level === 20) {
+        return WATER_WIZARD_ATTACK;
+      }
+    });
+  };
 
   useEffect(() => {
     if (groupId) {
@@ -60,6 +96,9 @@ const Game = () => {
     const socketIo = io(process.env.REACT_APP_SERVER_URL);
 
     setSocket(socketIo);
+
+    const infos = groupSpriteInfos();
+    setSpriteInfos(infos);
 
     return () => {
       socketIo.disconnect();
@@ -329,18 +368,24 @@ const Game = () => {
               <StatusBar />
             </StatusBarContainer>
             <CharactersContainer>
-              <WizardAttack
-                image={earthWizardAttack}
-                widthFrame={480}
-                heightFrame={590}
-                steps={12}
-                fps={15}
-                autoplay={state}
-                loop={true}
-                getInstance={(spritesheet) => {
-                  setSprites(spritesheet);
-                }}
-              />
+              <div className="userCharactersContainer">
+                {spriteInfos.length !== 0 &&
+                  spriteInfos.map((item) => (
+                    <WizardAttack
+                      className={`sprite ${item.NAME}`}
+                      image={item.IMAGE}
+                      widthFrame={item.WIDTH}
+                      heightFrame={item.HEIGHT}
+                      steps={item.STEPS}
+                      fps={item.FPS}
+                      autoplay={state}
+                      loop={true}
+                      getInstance={(spritesheet) => {
+                        setSprites(spritesheet);
+                      }}
+                    />
+                  ))}
+              </div>
               <Boss
                 image={boss}
                 widthFrame={810}
@@ -387,8 +432,7 @@ const Background = styled.div`
   background-image: url(${inGameBackground});
   background-repeat: no-repeat;
   background-size: cover;
-  width: 100%;
-  height: 100%;
+  height: 100vh;
 `;
 
 const ClockDiv = styled.div`
@@ -421,8 +465,6 @@ const MessageDiv = styled.div`
 `;
 
 const GameContainer = styled.div`
-  width: 100%;
-  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -453,11 +495,15 @@ const StatusBarContainer = styled.div`
 `;
 
 const CharactersContainer = styled.div`
-  margin-top: 200px;
+  .userCharactersContainer {
+    display: flex;
+    padding-top: 100px;
+  }
 `;
 
 const Boss = styled(Sprite)`
   width: 300px;
+  transform: translate3d(500px, -100px, 0);
   cursor: pointer;
 `;
 
