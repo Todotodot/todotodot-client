@@ -5,7 +5,6 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 import Portal from "../Portal/Portal";
-import catchAsync from "../../utils/catchAsync";
 import { setModalInfo } from "../../features/todoSlice";
 import * as api from "../../api/index";
 
@@ -30,7 +29,7 @@ const GameResultModal = () => {
     }
   };
 
-  const handleGameEnd = catchAsync(async () => {
+  const handleGameEnd = async () => {
     switch (modalInfo.propsCategory) {
       case "CompleteTODO":
         await api.completeTodo(modalInfo.todoId, modalInfo.userData);
@@ -43,7 +42,7 @@ const GameResultModal = () => {
         );
         break;
     }
-  });
+  };
 
   handleGameEnd();
 
