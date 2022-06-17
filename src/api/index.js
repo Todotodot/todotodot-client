@@ -1,7 +1,7 @@
 import Axios from "axios";
 
 const API = Axios.create({
-  baseURL: "http://todotodot-server-dev.ap-northeast-2.elasticbeanstalk.com",
+  baseURL: process.env.REACT_APP_SERVER_URL,
 });
 
 API.interceptors.request.use((req) => {
