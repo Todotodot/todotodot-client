@@ -12,7 +12,7 @@ import Sprite from "react-responsive-spritesheet";
 import { debounce } from "lodash";
 
 import { setModalInfo } from "../../features/todoSlice";
-import { charactersAttackInfo } from "../../constants/charactersInfo";
+import characterInfos from "../../utils/characterInfoList";
 
 import inGameBackground from "../../assets/images/inGameBackground.png";
 import boss from "../../assets/images/characters/HugeMushroom.png";
@@ -34,45 +34,12 @@ const Game = () => {
 
   const assignedClick = 10;
 
-  const [sprites, setSprites] = useState(null);
+  const [sprites, setSprites] = useState([]);
   const [bossSprite, setBossSprite] = useState(null);
   const [state, setState] = useState(false);
   const [spriteInfos, setSpriteInfos] = useState([]);
 
   const dispatch = useDispatch();
-
-  const groupSpriteInfos = () => {
-    return group.members.map((member) => {
-      const {
-        SLIME_ATTACK,
-        SMALL_WIZARD_ATTACK,
-        FIRE_WIZARD_ATTACK,
-        EARTH_WIZARD_ATTACK,
-        WATER_WIZARD_ATTACK,
-      } = charactersAttackInfo;
-      const { level } = member;
-
-      if (level >= 0 && level < 5) {
-        return SLIME_ATTACK;
-      }
-
-      if (level >= 5 && level < 10) {
-        return SMALL_WIZARD_ATTACK;
-      }
-
-      if (level >= 10 && level < 15) {
-        return FIRE_WIZARD_ATTACK;
-      }
-
-      if (level >= 15 && level < 20) {
-        return EARTH_WIZARD_ATTACK;
-      }
-
-      if (level === 20) {
-        return WATER_WIZARD_ATTACK;
-      }
-    });
-  };
 
   useEffect(() => {
     if (groupId) {
@@ -90,6 +57,8 @@ const Game = () => {
 
   useEffect(() => {
     if (!groupId) {
+      const personalCharacterInfo = characterInfos(user.level);
+      setSpriteInfos([personalCharacterInfo]);
       return;
     }
 
@@ -97,8 +66,8 @@ const Game = () => {
 
     setSocket(socketIo);
 
-    const infos = groupSpriteInfos();
-    setSpriteInfos(infos);
+    const groupCharacterInfo = group.members.map((member) => characterInfos(member.level));
+    setSpriteInfos(groupCharacterInfo);
 
     return () => {
       socketIo.disconnect();
@@ -186,7 +155,9 @@ const Game = () => {
 
   const play = () => {
     if (!state) {
-      sprites.play();
+      sprites.forEach((item) => {
+        item.play();
+      });
       bossSprite.setStartAt(4);
       bossSprite.setEndAt(8);
       bossSprite.goToAndPlay(4);
@@ -196,8 +167,10 @@ const Game = () => {
   };
 
   const pause = () => {
-    sprites.pause();
-    sprites.goToAndPause(1);
+    sprites.forEach((item) => {
+      item.pause();
+      item.goToAndPause(1);
+    });
 
     setTimeout(() => {
       bossSprite.pause();
@@ -381,7 +354,7 @@ const Game = () => {
                       autoplay={state}
                       loop={true}
                       getInstance={(spritesheet) => {
-                        setSprites(spritesheet);
+                        setSprites((sprite) => [...sprite, spritesheet]);
                       }}
                     />
                   ))}
