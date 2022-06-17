@@ -1,17 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 
-import Button from "../shared/Button";
 import Profile from "../Profile/Profile";
 import TodoList from "../TodoList/TodoList";
 import GroupList from "../GroupList/GroupList";
-import { firebaseAuth } from "../../config/firebase";
-import { authorization, fetchUserInfo } from "../../features/todoSlice";
+
+import { fetchUserInfo } from "../../features/todoSlice";
 
 const Main = () => {
-  const navigate = useNavigate();
   const dispatch = useDispatch();
   const [searchValue, setSearchValue] = useState("");
   const [filterValue, setFilterValue] = useState("");
@@ -23,17 +20,6 @@ const Main = () => {
 
   const getSearchValue = (result) => {
     setSearchValue(result);
-  };
-
-  const handleLogout = async () => {
-    await firebaseAuth.signOut();
-
-    localStorage.removeItem("profile");
-
-    if (!localStorage.getItem("profile")) {
-      dispatch(authorization());
-      navigate("/login");
-    }
   };
 
   useEffect(() => {
@@ -49,29 +35,23 @@ const Main = () => {
 
   return (
     <MainStyle>
-      <Button className="logoutBtn" onClick={handleLogout}>
-        Logout
-      </Button>
       <Profile onSearchValue={getSearchValue} />
-      {modalInfo.propsCategory.includes("TODO") && (
-        <TodoList onFilterValue={getFilterValue} />
-      )}
-      {modalInfo.propsCategory.includes("Group") && <GroupList />}
+      <div className="ListContainer">
+        {modalInfo.propsCategory.includes("TODO") && (
+          <TodoList onFilterValue={getFilterValue} />
+        )}
+        {modalInfo.propsCategory.includes("Group") && <GroupList />}
+      </div>
     </MainStyle>
   );
 };
 
 const MainStyle = styled.div`
   display: flex;
-  justify-content: space-between;
-  position: relative;
 
-  .logoutBtn {
-    position: absolute;
-    top: -70px;
-    right: 10px;
-    width: 120px;
-    height: 35px;
+  .ListContainer {
+    width: 100vw;
+    height: 100vh;
   }
 `;
 
