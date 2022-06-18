@@ -1,3 +1,4 @@
+/* eslint-disable operator-linebreak */
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -77,8 +78,8 @@ const GroupList = () => {
           </div>
         </GroupListHeader>
         <ul className="listBody">
-          {user.groups
-            && user.groups.map((item) => (
+          {user.groups &&
+            user.groups.map((item) => (
               <ListItemContainer key={item._id}>
                 <button
                   className="titleBtn"
@@ -144,17 +145,19 @@ const GroupListHeader = styled.div`
 
   .title {
     margin-left: 5px;
-    font-size: 26px;
+    font-size: 30px;
     font-weight: bold;
     color: #ec7665;
   }
 `;
 
 const GroupCreateBtn = styled(Button)`
-  float: right;
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
   width: 120px;
   height: 35px;
-  margin: 0 20px;
+  margin: 0;
   padding: 2px 0;
 `;
 

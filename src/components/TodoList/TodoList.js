@@ -204,7 +204,7 @@ const TodoListHeader = styled.div`
 
   .title {
     margin-left: 5px;
-    font-size: 26px;
+    font-size: 30px;
     font-weight: bold;
     color: #ec7665;
   }

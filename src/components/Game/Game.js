@@ -1,3 +1,5 @@
+/* eslint-disable function-paren-newline */
+/* eslint-disable implicit-arrow-linebreak */
 /* eslint-disable array-callback-return */
 /* eslint-disable no-sequences */
 /* eslint-disable operator-linebreak */
@@ -66,8 +68,12 @@ const Game = () => {
 
     setSocket(socketIo);
 
-    const groupCharacterInfo = group.members.map((member) => characterInfos(member.level));
-    setSpriteInfos(groupCharacterInfo);
+    if (members) {
+      const groupCharacterInfo = group.members.map((member) =>
+        characterInfos(member.level)
+      );
+      setSpriteInfos(groupCharacterInfo);
+    }
 
     return () => {
       socketIo.disconnect();
@@ -191,7 +197,17 @@ const Game = () => {
     }
   };
 
-  const clickDebounce = useCallback(debounce(pause, 800), [
+  const bossDeath = () => {
+    bossSprite.setStartAt(8);
+    bossSprite.setEndAt(11);
+    bossSprite.goToAndPlay(8);
+
+    setTimeout(() => {
+      bossSprite.goToAndPause(11);
+    }, 400);
+  };
+
+  const clickDebounce = useCallback(debounce(pause, 600), [
     sprites,
     bossSprite,
   ]);
@@ -205,6 +221,8 @@ const Game = () => {
               propsCategory: "IncompleteGroupTODO",
               title: "미션 실패!",
               message: "제한 시간안에 모든 멤버가 참여하지 못했습니다.",
+              todoId,
+              groupId,
               gameModal: true,
             })
           );
@@ -225,6 +243,8 @@ const Game = () => {
             propsCategory: "IncompleteGroupTODO",
             title: "미션 실패!",
             message: "게임에 참여하지 않은 멤버가 있습니다.",
+            todoId,
+            groupId,
             gameModal: true,
           })
         );
@@ -270,6 +290,7 @@ const Game = () => {
           title: "미션 완료!",
           message: "게임에 승리하였습니다.",
           todoId,
+          groupId,
           userData,
           gameModal: true,
         })
@@ -286,6 +307,8 @@ const Game = () => {
               propsCategory: "IncompleteGroupTODO",
               title: "미션 실패!",
               message: "제한 시간안에 미션을 완료하지 못했습니다.",
+              todoId,
+              groupId,
               gameModal: true,
             })
           );
@@ -325,7 +348,6 @@ const Game = () => {
         <>
           <ClockDiv>{loadingSecond}</ClockDiv>
           <MessageDiv>
-            <p className="loadingSecond">{loadingSecond}</p>
             <p className="title">모든 인원이 참여해야 몬스터가 나옵니다.</p>
             <p className="title">현재 인원 수</p>
             <p className="participants">
@@ -344,7 +366,8 @@ const Game = () => {
               <div className="userCharactersContainer">
                 {spriteInfos.length !== 0 &&
                   spriteInfos.map((item) => (
-                    <WizardAttack
+                    <Sprite
+                      key={`${item.IMAGE}${item.NAME}`}
                       className={`sprite ${item.NAME}`}
                       image={item.IMAGE}
                       widthFrame={item.WIDTH}
@@ -387,8 +410,8 @@ const Game = () => {
               Object.keys(memberClick).map((member) => {
                 return (
                   <li key={member}>
-                    {member}
-                    {memberClick[member]}
+                    <span className="memberName">{member}</span>
+                    <span className="memberCount">{memberClick[member]}</span>
                   </li>
                 );
               })}
@@ -402,10 +425,11 @@ const Game = () => {
 const StatusBar = styled.div``;
 
 const Background = styled.div`
+  width: 100vw;
+  height: 100vh;
   background-image: url(${inGameBackground});
   background-repeat: no-repeat;
   background-size: cover;
-  height: 100vh;
 `;
 
 const ClockDiv = styled.div`
@@ -449,7 +473,7 @@ const StatusBarContainer = styled.div`
   width: 60%;
   height: 20px;
   border-radius: 20px;
-  margin-bottom: 7%;
+  margin: 80px 0;
   position: relative;
   background-color: white;
   overflow: hidden;
@@ -468,28 +492,72 @@ const StatusBarContainer = styled.div`
 `;
 
 const CharactersContainer = styled.div`
+  position: relative;
+  width: 100vw;
+  height: 80vh;
+
   .userCharactersContainer {
     display: flex;
+    justify-content: space-evenly;
     padding-top: 100px;
+
+    .sprite {
+      position: absolute;
+      bottom: 80px;
+      left: 250px;
+      width: 100px;
+      /* padding: 0 100px; */
+    }
+
+    .slimeAttack {
+    }
+
+    .waterWizardAttack {
+      position: absolute;
+      bottom: 80px;
+      left: 300px;
+      width: 300px;
+    }
   }
 `;
 
 const Boss = styled(Sprite)`
+  position: absolute;
+  bottom: 0;
+  right: 50px;
   width: 300px;
-  transform: translate3d(500px, -100px, 0);
   cursor: pointer;
-`;
-
-const WizardAttack = styled(Sprite)`
-  width: 200px;
-  transform: translate3d(-400px, 350px, 0);
 `;
 
 const MemberClickContainer = styled.div`
   position: absolute;
-  top: 5px;
-  left: 0px;
-  background-color: white;
+  top: 200px;
+  left: -5px;
+  width: 200px;
+  height: auto;
+  border-radius: 5px;
+  background-color: rgba(255, 255, 255, 0.8);
+
+  li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-left: 20px;
+
+    .memberName {
+      margin: 5px 0;
+      font-size: 20px;
+      color: rgb(45, 45, 45);
+    }
+
+    .memberCount {
+      margin: 0 10px;
+      padding: 2px 10px;
+      font-size: 20px;
+      border-radius: 10px;
+      color: rgb(45, 45, 45);
+    }
+  }
 `;
 
 export default Game;

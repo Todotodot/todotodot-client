@@ -1,41 +1,3 @@
-exports.charactersIdleInfo = {
-  SLIME_IDLE: {
-    IMAGE: "blueSlimeIdle",
-    WIDTH: 240,
-    HEIGHT: 210,
-    STEPS: 5,
-    FPS: 8,
-  },
-  SMALL_WIZARD_IDLE: {
-    IMAGE: "smallWizardIdle",
-    WIDTH: 270,
-    HEIGHT: 320,
-    STEPS: 4,
-    FPS: 12,
-  },
-  FIRE_WIZARD_IDLE: {
-    IMAGE: "fireWizardIdle",
-    WIDTH: 255,
-    HEIGHT: 330,
-    STEPS: 5,
-    FPS: 8,
-  },
-  EARTH_WIZARD_IDLE: {
-    IMAGE: "earthWizardIdle",
-    WIDTH: 240,
-    HEIGHT: 330,
-    STEPS: 5,
-    FPS: 8,
-  },
-  WATER_WIZARD_IDLE: {
-    IMAGE: "waterWizardIdle",
-    WIDTH: 240,
-    HEIGHT: 320,
-    STEPS: 5,
-    FPS: 8,
-  },
-};
-
 exports.charactersAttackInfo = {
   NAME: "slimeAttack",
   SLIME_ATTACK: {
@@ -43,7 +5,7 @@ exports.charactersAttackInfo = {
       "http://drive.google.com/uc?export=view&id=1196-Dif7z9BEOf5H1bi4G5N16qVQrvkc",
     WIDTH: 270,
     HEIGHT: 212,
-    STEPS: 3,
+    STEPS: 5,
     FPS: 15,
   },
   SMALL_WIZARD_ATTACK: {

@@ -120,7 +120,6 @@ const SettingBtnAnimation = keyframes`
 
 const UserListStyle = styled.div`
   position: relative;
-  width: 400px;
   height: 100vh;
   background-color: rgba(169, 170, 188, 0.5);
   animation: ${UserListAnimation} 0.6s linear;
@@ -148,7 +147,7 @@ const ListNavBar = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 90%;
+  width: 300px;
   margin: 10px;
 
   .backButton {
@@ -174,9 +173,8 @@ const ListNavBar = styled.div`
     float: right;
     width: 70%;
     margin: 0 10px;
-    font-size: 26px;
+    font-size: 20px;
     text-align: right;
-    text-overflow: ellipsis;
     overflow: hidden;
   }
 `;
@@ -213,7 +211,6 @@ const ListContainer = styled.div`
 
         img {
           width: 22px;
-          margin: 2px 8px 0 5px;
           filter: opacity(0.7);
         }
       }
