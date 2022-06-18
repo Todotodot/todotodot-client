@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-wrap-multilines */
 import React, { useCallback, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled, { keyframes } from "styled-components";
@@ -13,6 +14,7 @@ import settingIcon from "../../assets/images/icons/setting.png";
 import soundOn from "../../assets/images/icons/sound-on.png";
 import soundOff from "../../assets/images/icons/sound-off.png";
 import blueSlimeIdle from "../../assets/images/characters/blueslime-idle.png";
+import waterWizardIdle from "../../assets/images/characters/waterwizard-idle.png";
 
 const Profile = ({ onSearchValue }) => {
   const dispatch = useDispatch();
@@ -49,15 +51,28 @@ const Profile = ({ onSearchValue }) => {
       </StatusBarContainer>
       <UserContainer>
         <div className="profile">
-          <SlimeIdle
-            image={blueSlimeIdle}
-            widthFrame={240}
-            heightFrame={210}
-            steps={5}
-            fps={5}
-            autoplay={true}
-            loop={true}
-          />
+          {user && user.level < 5 && (
+            <SlimeIdle
+              image={blueSlimeIdle}
+              widthFrame={240}
+              heightFrame={210}
+              steps={5}
+              fps={5}
+              autoplay={true}
+              loop={true}
+            />
+          )}
+          {user && user.level === 20 && (
+            <WizardIdle
+              image={waterWizardIdle}
+              widthFrame={240}
+              heightFrame={330}
+              steps={5}
+              fps={8}
+              autoplay={true}
+              loop={true}
+            />
+          )}
         </div>
         <div className="userLevelContainer">
           <UserLevel>
@@ -156,7 +171,7 @@ const StatusBarContainer = styled.div`
     position: absolute;
     top: 0;
     left: -1px;
-    width: ${(props) => `${props.experience * 3}0%`};
+    width: ${(props) => `${0 + props.experience * 5}%`};
     height: 100%;
     border-radius: 15px;
     background-color: #40d65e;
@@ -208,7 +223,12 @@ const UserContainer = styled.div`
 `;
 
 const SlimeIdle = styled(Sprite)`
-  width: 60%;
+  width: 45%;
+  padding: 15px 5px;
+`;
+
+const WizardIdle = styled(Sprite)`
+  width: 40%;
 `;
 
 const UserLevel = styled.div`

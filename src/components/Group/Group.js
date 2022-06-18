@@ -4,7 +4,6 @@ import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 
-import Button from "../shared/Button";
 import UserList from "../UserList/UserList";
 import TodoList from "../TodoList/TodoList";
 import { addGroupMember } from "../../api/index";
