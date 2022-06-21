@@ -13,9 +13,7 @@ import {
 import { login } from "../../api/index";
 import { fetchUserInfo } from "../../features/todoSlice";
 
-import orangeSlime from "../../assets/images/characters/orangeSlime_attack.png";
 import boss from "../../assets/images/characters/hugeMushroom_attack2.png";
-import logo from "../../assets/images/logo.png";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -40,7 +38,6 @@ const Login = () => {
     <LoginStyle>
       <div className="loginContainer">
         <div className="loginBorder">
-          {/* <img src={logo} alt="logo" /> */}
           <div className="sprite">
             <Boss
               image={boss}
