@@ -27,7 +27,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "lint": "eslint src"
   },
   "eslintConfig": {
     "extends": [
@@ -49,7 +50,6 @@
   },
   "devDependencies": {
     "eslint": "7.32.0",
-    "eslint-config-airbnb": "19.0.4",
     "eslint-config-prettier": "7.2.0",
     "eslint-plugin-import": "2.26.0",
     "eslint-plugin-jsx-a11y": "6.5.1",
@@ -59,9 +59,14 @@
     "husky": "8.0.1",
     "prettier": "2.6.2"
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
   "lint-staged": {
     "*.js": "eslint --fix",
-    "*.{js,css,md}": "prettier --write"
+    "*.{js,css,md}": ["prettier --write", "git add ."]
   },
   "homepage": "https://www.todotodot.com"
 }
