@@ -1,4 +1,3 @@
-/* eslint-disable consistent-return */
 import { charactersAttackInfo } from "../constants/charactersInfo";
 
 const characterInfos = (level) => {

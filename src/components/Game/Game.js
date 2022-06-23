@@ -1,10 +1,3 @@
-/* eslint-disable function-paren-newline */
-/* eslint-disable implicit-arrow-linebreak */
-/* eslint-disable array-callback-return */
-/* eslint-disable no-sequences */
-/* eslint-disable operator-linebreak */
-/* eslint-disable react/jsx-one-expression-per-line */
-/* eslint-disable consistent-return */
 import React, { useEffect, useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";

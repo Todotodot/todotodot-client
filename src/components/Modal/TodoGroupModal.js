@@ -1,5 +1,3 @@
-/* eslint-disable operator-linebreak */
-/* eslint-disable default-case */
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";

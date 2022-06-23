@@ -1,6 +1,3 @@
-/* eslint-disable function-paren-newline */
-/* eslint-disable implicit-arrow-linebreak */
-/* eslint-disable object-curly-newline */
 const todosFilter = (userInfo, filterInfo) => {
   const { searchValue, filterValue, isGroup, groupId } = filterInfo;
 

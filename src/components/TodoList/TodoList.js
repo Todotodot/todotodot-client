@@ -1,6 +1,3 @@
-/* eslint-disable react/jsx-curly-newline */
-/* eslint-disable operator-linebreak */
-/* eslint-disable implicit-arrow-linebreak */
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
